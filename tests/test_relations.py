@@ -1,8 +1,16 @@
-from .utils import mock_reverse, fail_reverse, BadType, MockObject, MockQueryset
-from django.core.exceptions import ImproperlyConfigured
-from rest_framework import serializers
-from rest_framework.test import APISimpleTestCase
+import uuid
+
 import pytest
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.datastructures import MultiValueDict
+
+from rest_framework import serializers
+from rest_framework.fields import empty
+from rest_framework.test import APISimpleTestCase
+
+from .utils import (
+    BadType, MockObject, MockQueryset, fail_reverse, mock_reverse
+)
 
 
 class TestStringRelatedField(APISimpleTestCase):
@@ -33,7 +41,7 @@ class TestPrimaryKeyRelatedField(APISimpleTestCase):
         with pytest.raises(serializers.ValidationError) as excinfo:
             self.field.to_internal_value(4)
         msg = excinfo.value.detail[0]
-        assert msg == "Invalid pk '4' - object does not exist."
+        assert msg == 'Invalid pk "4" - object does not exist.'
 
     def test_pk_related_lookup_invalid_type(self):
         with pytest.raises(serializers.ValidationError) as excinfo:
@@ -44,6 +52,51 @@ class TestPrimaryKeyRelatedField(APISimpleTestCase):
     def test_pk_representation(self):
         representation = self.field.to_representation(self.instance)
         assert representation == self.instance.pk
+
+    def test_explicit_many_false(self):
+        field = serializers.PrimaryKeyRelatedField(queryset=self.queryset, many=False)
+        instance = field.to_internal_value(self.instance.pk)
+        assert instance is self.instance
+
+
+class TestProxiedPrimaryKeyRelatedField(APISimpleTestCase):
+    def setUp(self):
+        self.queryset = MockQueryset([
+            MockObject(pk=uuid.UUID(int=0), name='foo'),
+            MockObject(pk=uuid.UUID(int=1), name='bar'),
+            MockObject(pk=uuid.UUID(int=2), name='baz')
+        ])
+        self.instance = self.queryset.items[2]
+        self.field = serializers.PrimaryKeyRelatedField(
+            queryset=self.queryset,
+            pk_field=serializers.UUIDField(format='int')
+        )
+
+    def test_pk_related_lookup_exists(self):
+        instance = self.field.to_internal_value(self.instance.pk.int)
+        assert instance is self.instance
+
+    def test_pk_related_lookup_does_not_exist(self):
+        with pytest.raises(serializers.ValidationError) as excinfo:
+            self.field.to_internal_value(4)
+        msg = excinfo.value.detail[0]
+        assert msg == 'Invalid pk "00000000-0000-0000-0000-000000000004" - object does not exist.'
+
+    def test_pk_representation(self):
+        representation = self.field.to_representation(self.instance)
+        assert representation == self.instance.pk.int
+
+
+class TestHyperlinkedRelatedField(APISimpleTestCase):
+    def setUp(self):
+        self.field = serializers.HyperlinkedRelatedField(
+            view_name='example', read_only=True)
+        self.field.reverse = mock_reverse
+        self.field._context = {'request': True}
+
+    def test_representation_unsaved_object_with_non_nullable_pk(self):
+        representation = self.field.to_representation(MockObject(pk=''))
+        assert representation is None
 
 
 class TestHyperlinkedIdentityField(APISimpleTestCase):
@@ -134,3 +187,55 @@ class TestSlugRelatedField(APISimpleTestCase):
     def test_representation(self):
         representation = self.field.to_representation(self.instance)
         assert representation == self.instance.name
+
+    def test_overriding_get_queryset(self):
+        qs = self.queryset
+
+        class NoQuerySetSlugRelatedField(serializers.SlugRelatedField):
+            def get_queryset(self):
+                return qs
+
+        field = NoQuerySetSlugRelatedField(slug_field='name')
+        field.to_internal_value(self.instance.name)
+
+
+class TestManyRelatedField(APISimpleTestCase):
+    def setUp(self):
+        self.instance = MockObject(pk=1, name='foo')
+        self.field = serializers.StringRelatedField(many=True)
+        self.field.field_name = 'foo'
+
+    def test_get_value_regular_dictionary_full(self):
+        assert 'bar' == self.field.get_value({'foo': 'bar'})
+        assert empty == self.field.get_value({'baz': 'bar'})
+
+    def test_get_value_regular_dictionary_partial(self):
+        setattr(self.field.root, 'partial', True)
+        assert 'bar' == self.field.get_value({'foo': 'bar'})
+        assert empty == self.field.get_value({'baz': 'bar'})
+
+    def test_get_value_multi_dictionary_full(self):
+        mvd = MultiValueDict({'foo': ['bar1', 'bar2']})
+        assert ['bar1', 'bar2'] == self.field.get_value(mvd)
+
+        mvd = MultiValueDict({'baz': ['bar1', 'bar2']})
+        assert [] == self.field.get_value(mvd)
+
+    def test_get_value_multi_dictionary_partial(self):
+        setattr(self.field.root, 'partial', True)
+        mvd = MultiValueDict({'foo': ['bar1', 'bar2']})
+        assert ['bar1', 'bar2'] == self.field.get_value(mvd)
+
+        mvd = MultiValueDict({'baz': ['bar1', 'bar2']})
+        assert empty == self.field.get_value(mvd)
+
+
+class TestHyperlink:
+    def setup(self):
+        self.default_hyperlink = serializers.Hyperlink('http://example.com', 'test')
+
+    def test_can_be_pickled(self):
+        import pickle
+        upkled = pickle.loads(pickle.dumps(self.default_hyperlink))
+        assert upkled == self.default_hyperlink
+        assert upkled.name == self.default_hyperlink.name

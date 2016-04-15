@@ -1,10 +1,13 @@
 from __future__ import unicode_literals
-from django.core.validators import RegexValidator, MaxValueValidator
+
+import re
+
+from django.core.validators import MaxValueValidator, RegexValidator
 from django.db import models
 from django.test import TestCase
+
 from rest_framework import generics, serializers, status
 from rest_framework.test import APIRequestFactory
-import re
 
 factory = APIRequestFactory()
 
@@ -44,6 +47,24 @@ class ShouldValidateModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShouldValidateModel
         fields = ('renamed',)
+
+
+class TestNestedValidationError(TestCase):
+    def test_nested_validation_error_detail(self):
+        """
+        Ensure nested validation error detail is rendered correctly.
+        """
+        e = serializers.ValidationError({
+            'nested': {
+                'field': ['error'],
+            }
+        })
+
+        self.assertEqual(serializers.get_validation_error_detail(e), {
+            'nested': {
+                'field': ['error'],
+            }
+        })
 
 
 class TestPreSaveValidationExclusionsSerializer(TestCase):
@@ -138,12 +159,16 @@ class TestMaxValueValidatorValidation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
+# regression tests for issue: 1533
+
 class TestChoiceFieldChoicesValidate(TestCase):
     CHOICES = [
         (0, 'Small'),
         (1, 'Medium'),
         (2, 'Large'),
     ]
+
+    SINGLE_CHOICES = [0, 1, 2]
 
     CHOICES_NESTED = [
         ('Category', (
@@ -154,12 +179,54 @@ class TestChoiceFieldChoicesValidate(TestCase):
         (4, 'Fourth'),
     ]
 
+    MIXED_CHOICES = [
+        ('Category', (
+            (1, 'First'),
+            (2, 'Second'),
+        )),
+        3,
+        (4, 'Fourth'),
+    ]
+
     def test_choices(self):
         """
         Make sure a value for choices works as expected.
         """
         f = serializers.ChoiceField(choices=self.CHOICES)
         value = self.CHOICES[0][0]
+        try:
+            f.to_internal_value(value)
+        except serializers.ValidationError:
+            self.fail("Value %s does not validate" % str(value))
+
+    def test_single_choices(self):
+        """
+        Make sure a single value for choices works as expected.
+        """
+        f = serializers.ChoiceField(choices=self.SINGLE_CHOICES)
+        value = self.SINGLE_CHOICES[0]
+        try:
+            f.to_internal_value(value)
+        except serializers.ValidationError:
+            self.fail("Value %s does not validate" % str(value))
+
+    def test_nested_choices(self):
+        """
+        Make sure a nested value for choices works as expected.
+        """
+        f = serializers.ChoiceField(choices=self.CHOICES_NESTED)
+        value = self.CHOICES_NESTED[0][1][0][0]
+        try:
+            f.to_internal_value(value)
+        except serializers.ValidationError:
+            self.fail("Value %s does not validate" % str(value))
+
+    def test_mixed_choices(self):
+        """
+        Make sure mixed values for choices works as expected.
+        """
+        f = serializers.ChoiceField(choices=self.MIXED_CHOICES)
+        value = self.MIXED_CHOICES[1]
         try:
             f.to_internal_value(value)
         except serializers.ValidationError:

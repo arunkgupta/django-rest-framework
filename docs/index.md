@@ -1,17 +1,18 @@
 <p class="badges" height=20px>
-<iframe src="http://ghbtns.com/github-btn.html?user=tomchristie&amp;repo=django-rest-framework&amp;type=watch&amp;count=true" class="github-star-button" allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
+    <iframe src="http://ghbtns.com/github-btn.html?user=tomchristie&amp;repo=django-rest-framework&amp;type=watch&amp;count=true" class="github-star-button" allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
 
-<a href="https://twitter.com/share" class="twitter-share-button" data-url="django-rest-framework.org" data-text="Checking out the totally awesome Django REST framework! http://www.django-rest-framework.org" data-count="none"></a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    <a href="http://travis-ci.org/tomchristie/django-rest-framework?branch=master">
+        <img src="https://secure.travis-ci.org/tomchristie/django-rest-framework.svg?branch=master" class="status-badge">
+    </a>
 
-<img src="https://secure.travis-ci.org/tomchristie/django-rest-framework.svg?branch=master" class="travis-build-image">
+    <a href="https://pypi.python.org/pypi/djangorestframework">
+        <img src="https://img.shields.io/pypi/v/djangorestframework.svg" class="status-badge">
+    </a>
 </p>
 
 ---
 
-**Note**: This is the documentation for the **version 3.0** of REST framework. Documentation for [version 2.4](http://tomchristie.github.io/rest-framework-2-docs/) is also available.
-
-For more details see the [3.0 release notes][3.0-announcement].
+**Note**: This is the documentation for the **version 3** of REST framework. Documentation for [version 2](http://tomchristie.github.io/rest-framework-2-docs/) is also available.
 
 ---
 
@@ -28,13 +29,12 @@ For more details see the [3.0 release notes][3.0-announcement].
 <img alt="Django REST Framework" title="Logo by Jake 'Sid' Smith" src="img/logo.png" width="600px" style="display: block; margin: 0 auto 0 auto">
 </p>
 
-
-Django REST framework is a powerful and flexible toolkit that makes it easy to build Web APIs.
+Django REST framework is a powerful and flexible toolkit for building Web APIs.
 
 Some reasons you might want to use REST framework:
 
 * The [Web browsable API][sandbox] is a huge usability win for your developers.
-* [Authentication policies][authentication] including [OAuth1a][oauth1-section] and [OAuth2][oauth2-section] out of the box.
+* [Authentication policies][authentication] including packages for [OAuth1a][oauth1-section] and [OAuth2][oauth2-section].
 * [Serialization][serializers] that supports both [ORM][modelserializer-section] and [non-ORM][serializer-section] data sources.
 * Customizable all the way down - just use [regular function-based views][functionview-section] if you don't need the [more][generic-views] [powerful][viewsets] [features][routers].
 * [Extensive documentation][index], and [great community support][group].
@@ -50,20 +50,15 @@ Some reasons you might want to use REST framework:
 
 REST framework requires the following:
 
-* Python (2.6.5+, 2.7, 3.2, 3.3, 3.4)
-* Django (1.4.11+, 1.5.5+, 1.6, 1.7)
+* Python (2.7, 3.2, 3.3, 3.4, 3.5)
+* Django (1.7+, 1.8, 1.9)
 
 The following packages are optional:
 
 * [Markdown][markdown] (2.1.0+) - Markdown support for the browsable API.
-* [PyYAML][yaml] (3.10+) - YAML content-type support.
-* [defusedxml][defusedxml] (0.3+) - XML content-type support.
-* [django-filter][django-filter] (0.5.4+) - Filtering support.
-* [django-oauth-plus][django-oauth-plus] (2.0+) and [oauth2][oauth2] (1.5.211+) - OAuth 1.0a support.
-* [django-oauth2-provider][django-oauth2-provider] (0.2.3+) - OAuth 2.0 support.
+* [django-filter][django-filter] (0.9.2+) - Filtering support.
+* [django-crispy-forms][django-crispy-forms] - Improved HTML display for filtering.
 * [django-guardian][django-guardian] (1.1.1+) - Object level permissions support.
-
-**Note**: The `oauth2` Python package is badly misnamed, and actually provides OAuth 1.0a support.  Also note that packages required for both OAuth 1.0a, and OAuth 2.0 are not yet Python 3 compatible.
 
 ## Installation
 
@@ -91,7 +86,7 @@ If you're intending to use the browsable API you'll probably also want to add RE
         url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
     ]
 
-Note that the URL path can be whatever you want, but you must include `'rest_framework.urls'` with the `'rest_framework'` namespace.
+Note that the URL path can be whatever you want, but you must include `'rest_framework.urls'` with the `'rest_framework'` namespace. You may leave out the namespace in Django 1.9+, and REST framework will set it for you.
 
 ## Example
 
@@ -180,6 +175,7 @@ The API guide is your complete reference manual to all the functionality provide
 * [Throttling][throttling]
 * [Filtering][filtering]
 * [Pagination][pagination]
+* [Versioning][versioning]
 * [Content negotiation][contentnegotiation]
 * [Metadata][metadata]
 * [Format suffixes][formatsuffixes]
@@ -194,21 +190,21 @@ The API guide is your complete reference manual to all the functionality provide
 General guides to using REST framework.
 
 * [Documenting your API][documenting-your-api]
+* [Internationalization][internationalization]
 * [AJAX, CSRF & CORS][ajax-csrf-cors]
+* [HTML & Forms][html-and-forms]
 * [Browser enhancements][browser-enhancements]
 * [The Browsable API][browsableapi]
 * [REST, Hypermedia & HATEOAS][rest-hypermedia-hateoas]
 * [Third Party Resources][third-party-resources]
 * [Contributing to REST framework][contributing]
 * [Project management][project-management]
-* [2.0 Announcement][rest-framework-2-announcement]
-* [2.2 Announcement][2.2-announcement]
-* [2.3 Announcement][2.3-announcement]
-* [2.4 Announcement][2.4-announcement]
 * [3.0 Announcement][3.0-announcement]
+* [3.1 Announcement][3.1-announcement]
+* [3.2 Announcement][3.2-announcement]
+* [3.3 Announcement][3.3-announcement]
 * [Kickstarter Announcement][kickstarter-announcement]
 * [Release Notes][release-notes]
-* [Credits][credits]
 
 ## Development
 
@@ -235,7 +231,7 @@ Send a description of the issue via email to [rest-framework-security@googlegrou
 
 ## License
 
-Copyright (c) 2011-2015, Tom Christie
+Copyright (c) 2011-2016, Tom Christie
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -258,23 +254,17 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-[travis]: http://travis-ci.org/tomchristie/django-rest-framework?branch=master
-[travis-build-image]: https://secure.travis-ci.org/tomchristie/django-rest-framework.png?branch=master
 [mozilla]: http://www.mozilla.org/en-US/about/
 [eventbrite]: https://www.eventbrite.co.uk/about/
 [markdown]: http://pypi.python.org/pypi/Markdown/
-[yaml]: http://pypi.python.org/pypi/PyYAML
-[defusedxml]: https://pypi.python.org/pypi/defusedxml
 [django-filter]: http://pypi.python.org/pypi/django-filter
-[oauth2]: https://github.com/simplegeo/python-oauth2
-[django-oauth-plus]: https://bitbucket.org/david/django-oauth-plus/wiki/Home
-[django-oauth2-provider]: https://github.com/caffeinehit/django-oauth2-provider
+[django-crispy-forms]: https://github.com/maraujop/django-crispy-forms
 [django-guardian]: https://github.com/lukaszb/django-guardian
 [0.4]: https://github.com/tomchristie/django-rest-framework/tree/0.4.X
 [image]: img/quickstart.png
 [index]: .
-[oauth1-section]: api-guide/authentication#oauthauthentication
-[oauth2-section]: api-guide/authentication#oauth2authentication
+[oauth1-section]: api-guide/authentication/#django-rest-framework-oauth
+[oauth2-section]: api-guide/authentication/#django-oauth-toolkit
 [serializer-section]: api-guide/serializers#serializers
 [modelserializer-section]: api-guide/serializers#modelserializer
 [functionview-section]: api-guide/views#function-based-views
@@ -305,6 +295,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 [throttling]: api-guide/throttling.md
 [filtering]: api-guide/filtering.md
 [pagination]: api-guide/pagination.md
+[versioning]: api-guide/versioning.md
 [contentnegotiation]: api-guide/content-negotiation.md
 [metadata]: api-guide/metadata.md
 [formatsuffixes]: api-guide/format-suffixes.md
@@ -315,21 +306,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 [settings]: api-guide/settings.md
 
 [documenting-your-api]: topics/documenting-your-api.md
+[internationalization]: topics/internationalization.md
 [ajax-csrf-cors]: topics/ajax-csrf-cors.md
+[html-and-forms]: topics/html-and-forms.md
 [browser-enhancements]: topics/browser-enhancements.md
 [browsableapi]: topics/browsable-api.md
 [rest-hypermedia-hateoas]: topics/rest-hypermedia-hateoas.md
 [contributing]: topics/contributing.md
 [project-management]: topics/project-management.md
 [third-party-resources]: topics/third-party-resources.md
-[rest-framework-2-announcement]: topics/rest-framework-2-announcement.md
-[2.2-announcement]: topics/2.2-announcement.md
-[2.3-announcement]: topics/2.3-announcement.md
-[2.4-announcement]: topics/2.4-announcement.md
 [3.0-announcement]: topics/3.0-announcement.md
+[3.1-announcement]: topics/3.1-announcement.md
+[3.2-announcement]: topics/3.2-announcement.md
+[3.3-announcement]: topics/3.3-announcement.md
 [kickstarter-announcement]: topics/kickstarter-announcement.md
+[funding]: topics/funding.md
 [release-notes]: topics/release-notes.md
-[credits]: topics/credits.md
 
 [tox]: http://testrun.org/tox/latest/
 

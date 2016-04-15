@@ -2,14 +2,18 @@
 Tests for the throttling implementations in the permissions module.
 """
 from __future__ import unicode_literals
-from django.test import TestCase
+
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.test import TestCase
+
+from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.test import APIRequestFactory
+from rest_framework.throttling import (
+    BaseThrottle, ScopedRateThrottle, UserRateThrottle
+)
 from rest_framework.views import APIView
-from rest_framework.throttling import BaseThrottle, UserRateThrottle, ScopedRateThrottle
-from rest_framework.response import Response
 
 
 class User3SecRateThrottle(UserRateThrottle):
@@ -188,7 +192,9 @@ class ScopedRateThrottleTests(TestCase):
         class XYScopedRateThrottle(ScopedRateThrottle):
             TIMER_SECONDS = 0
             THROTTLE_RATES = {'x': '3/min', 'y': '1/min'}
-            timer = lambda self: self.TIMER_SECONDS
+
+            def timer(self):
+                return self.TIMER_SECONDS
 
         class XView(APIView):
             throttle_classes = (XYScopedRateThrottle,)
@@ -290,7 +296,9 @@ class XffTestingBase(TestCase):
         class Throttle(ScopedRateThrottle):
             THROTTLE_RATES = {'test_limit': '1/day'}
             TIMER_SECONDS = 0
-            timer = lambda self: self.TIMER_SECONDS
+
+            def timer(self):
+                return self.TIMER_SECONDS
 
         class View(APIView):
             throttle_classes = (Throttle,)

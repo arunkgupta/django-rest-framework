@@ -45,14 +45,8 @@ We'll need to add our new `snippets` app and the `rest_framework` app to `INSTAL
     INSTALLED_APPS = (
         ...
         'rest_framework',
-        'snippets',
+        'snippets.apps.SnippetsConfig',
     )
-
-We also need to wire up the root urlconf, in the `tutorial/urls.py` file, to include our snippet app's URLs.
-
-    urlpatterns = [
-        url(r'^', include('snippets.urls')),
-    ]
 
 Okay, we're ready to roll.
 
@@ -89,7 +83,6 @@ We'll also need to create an initial migration for our snippet model, and sync t
 
 The first thing we need to get started on our Web API is to provide a way of serializing and deserializing the snippet instances into representations such as `json`.  We can do this by declaring serializers that work very similar to Django's forms.  Create a file in the `snippets` directory named `serializers.py` and add the following.
 
-    from django.forms import widgets
     from rest_framework import serializers
     from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
@@ -97,7 +90,7 @@ The first thing we need to get started on our Web API is to provide a way of ser
     class SnippetSerializer(serializers.Serializer):
         pk = serializers.IntegerField(read_only=True)
         title = serializers.CharField(required=False, allow_blank=True, max_length=100)
-        code = serializers.CharField(style={'type': 'textarea'})
+        code = serializers.CharField(style={'base_template': 'textarea.html'})
         linenos = serializers.BooleanField(required=False)
         language = serializers.ChoiceField(choices=LANGUAGE_CHOICES, default='python')
         style = serializers.ChoiceField(choices=STYLE_CHOICES, default='friendly')
@@ -124,7 +117,7 @@ The first part of the serializer class defines the fields that get serialized/de
 
 A serializer class is very similar to a Django `Form` class, and includes similar validation flags on the various fields, such as `required`, `max_length` and `default`.
 
-The field flags can also control how the serializer should be displayed in certain circumstances, such as when rendering to HTML. The `style={'type': 'textarea'}` flag above is equivelent to using `widget=widgets.Textarea` on a Django `Form` class. This is particularly useful for controlling how the browsable API should be displayed, as we'll see later in the tutorial.
+The field flags can also control how the serializer should be displayed in certain circumstances, such as when rendering to HTML. The `{'base_template': 'textarea.html'}` flag above is equivalent to using `widget=widgets.Textarea` on a Django `Form` class. This is particularly useful for controlling how the browsable API should be displayed, as we'll see later in the tutorial.
 
 We can actually also save ourselves some time by using the `ModelSerializer` class, as we'll see later, but for now we'll keep our serializer definition explicit.
 
@@ -166,7 +159,7 @@ Deserialization is similar.  First we parse a stream into Python native datatype
     stream = BytesIO(content)
     data = JSONParser().parse(stream)
 
-...then we restore those native datatypes into to a fully populated object instance.
+...then we restore those native datatypes into a fully populated object instance.
 
     serializer = SnippetSerializer(data=data)
     serializer.is_valid()
@@ -182,7 +175,7 @@ We can also serialize querysets instead of model instances.  To do so we simply 
 
     serializer = SnippetSerializer(Snippet.objects.all(), many=True)
     serializer.data
-    # [{'pk': 1, 'title': u'', 'code': u'foo = "bar"\n', 'linenos': False, 'language': u'python', 'style': u'friendly'}, {'pk': 2, 'title': u'', 'code': u'print "hello, world"\n', 'linenos': False, 'language': u'python', 'style': u'friendly'}]
+    # [OrderedDict([('pk', 1), ('title', u''), ('code', u'foo = "bar"\n'), ('linenos', False), ('language', 'python'), ('style', 'friendly')]), OrderedDict([('pk', 2), ('title', u''), ('code', u'print "hello, world"\n'), ('linenos', False), ('language', 'python'), ('style', 'friendly')]), OrderedDict([('pk', 3), ('title', u''), ('code', u'print "hello, world"'), ('linenos', False), ('language', 'python'), ('style', 'friendly')])]
 
 ## Using ModelSerializers
 
@@ -191,25 +184,25 @@ Our `SnippetSerializer` class is replicating a lot of information that's also co
 In the same way that Django provides both `Form` classes and `ModelForm` classes, REST framework includes both `Serializer` classes, and `ModelSerializer` classes.
 
 Let's look at refactoring our serializer using the `ModelSerializer` class.
-Open the file `snippets/serializers.py` again, and edit the `SnippetSerializer` class.
+Open the file `snippets/serializers.py` again, and replace the `SnippetSerializer` class with the following.
 
     class SnippetSerializer(serializers.ModelSerializer):
         class Meta:
             model = Snippet
             fields = ('id', 'title', 'code', 'linenos', 'language', 'style')
 
-One nice property that serializers have is that you can inspect all the fields in a serializer instance, by printing it's representation. Open the Django shell with `python manage.py shell`, then try the following:
+One nice property that serializers have is that you can inspect all the fields in a serializer instance, by printing its representation. Open the Django shell with `python manage.py shell`, then try the following:
 
-    >>> from snippets.serializers import SnippetSerializer
-    >>> serializer = SnippetSerializer()
-    >>> print(repr(serializer))
-    SnippetSerializer():
-        id = IntegerField(label='ID', read_only=True)
-        title = CharField(allow_blank=True, max_length=100, required=False)
-        code = CharField(style={'type': 'textarea'})
-        linenos = BooleanField(required=False)
-        language = ChoiceField(choices=[('Clipper', 'FoxPro'), ('Cucumber', 'Gherkin'), ('RobotFramework', 'RobotFramework'), ('abap', 'ABAP'), ('ada', 'Ada')...
-        style = ChoiceField(choices=[('autumn', 'autumn'), ('borland', 'borland'), ('bw', 'bw'), ('colorful', 'colorful')...
+    from snippets.serializers import SnippetSerializer
+    serializer = SnippetSerializer()
+    print(repr(serializer))
+    # SnippetSerializer():
+    #    id = IntegerField(label='ID', read_only=True)
+    #    title = CharField(allow_blank=True, max_length=100, required=False)
+    #    code = CharField(style={'base_template': 'textarea.html'})
+    #    linenos = BooleanField(required=False)
+    #    language = ChoiceField(choices=[('Clipper', 'FoxPro'), ('Cucumber', 'Gherkin'), ('RobotFramework', 'RobotFramework'), ('abap', 'ABAP'), ('ada', 'Ada')...
+    #    style = ChoiceField(choices=[('autumn', 'autumn'), ('borland', 'borland'), ('bw', 'bw'), ('colorful', 'colorful')...
 
 It's important to remember that `ModelSerializer` classes don't do anything particularly magical, they are simply a shortcut for creating serializer classes:
 
@@ -301,6 +294,14 @@ Finally we need to wire these views up.  Create the `snippets/urls.py` file:
         url(r'^snippets/(?P<pk>[0-9]+)/$', views.snippet_detail),
     ]
 
+We also need to wire up the root urlconf, in the `tutorial/urls.py` file, to include our snippet app's URLs.
+
+    from django.conf.urls import url, include
+
+    urlpatterns = [
+        url(r'^', include('snippets.urls')),
+    ]
+
 It's worth noting that there are a couple of edge cases we're not dealing with properly at the moment.  If we send malformed `json`, or if a request is made with a method that the view doesn't handle, then we'll end up with a 500 "server error" response.  Still, this'll do for now.
 
 ## Testing our first attempt at a Web API
@@ -318,13 +319,13 @@ Quit out of the shell...
 	Validating models...
 
 	0 errors found
-	Django version 1.4.3, using settings 'tutorial.settings'
+	Django version 1.8.3, using settings 'tutorial.settings'
 	Development server is running at http://127.0.0.1:8000/
 	Quit the server with CONTROL-C.
 
 In another terminal window, we can test the server.
 
-We can test our API using using [curl][curl] or [httpie][httpie]. Httpie is a user friendly http client that's written in Python. Let's install that.
+We can test our API using [curl][curl] or [httpie][httpie]. Httpie is a user friendly http client that's written in Python. Let's install that.
 
 You can install httpie using pip:
 

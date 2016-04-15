@@ -1,17 +1,22 @@
 from __future__ import unicode_literals
+
 import datetime
+import unittest
 from decimal import Decimal
-from django.db import models
-from django.conf.urls import patterns, url
+
+from django.conf.urls import url
 from django.core.urlresolvers import reverse
+from django.db import models
 from django.test import TestCase
-from django.utils import unittest
+from django.test.utils import override_settings
 from django.utils.dateparse import parse_date
-from rest_framework import generics, serializers, status, filters
+from django.utils.six.moves import reload_module
+
+from rest_framework import filters, generics, serializers, status
 from rest_framework.compat import django_filters
 from rest_framework.test import APIRequestFactory
-from .models import BaseFilterableItem, FilterableItem, BasicModel
-from .utils import temporary_setting
+
+from .models import BaseFilterableItem, BasicModel, FilterableItem
 
 factory = APIRequestFactory()
 
@@ -92,13 +97,12 @@ if django_filters:
         def get_queryset(self):
             return FilterableItem.objects.all()
 
-    urlpatterns = patterns(
-        '',
+    urlpatterns = [
         url(r'^(?P<pk>\d+)/$', FilterClassDetailView.as_view(), name='detail-view'),
         url(r'^$', FilterClassRootView.as_view(), name='root-view'),
         url(r'^get-queryset/$', GetQuerysetView.as_view(),
             name='get-queryset-view'),
-    )
+    ]
 
 
 class CommonFilteringTestCase(TestCase):
@@ -403,8 +407,27 @@ class SearchFilterTests(TestCase):
             ]
         )
 
+    def test_regexp_search(self):
+        class SearchListView(generics.ListAPIView):
+            queryset = SearchFilterModel.objects.all()
+            serializer_class = SearchFilterSerializer
+            filter_backends = (filters.SearchFilter,)
+            search_fields = ('$title', '$text')
+
+        view = SearchListView.as_view()
+        request = factory.get('/', {'search': 'z{2} ^b'})
+        response = view(request)
+        self.assertEqual(
+            response.data,
+            [
+                {'id': 2, 'title': 'zz', 'text': 'bcd'}
+            ]
+        )
+
     def test_search_with_nonstandard_search_param(self):
-        with temporary_setting('SEARCH_PARAM', 'query', module=filters):
+        with override_settings(REST_FRAMEWORK={'SEARCH_PARAM': 'query'}):
+            reload_module(filters)
+
             class SearchListView(generics.ListAPIView):
                 queryset = SearchFilterModel.objects.all()
                 serializer_class = SearchFilterSerializer
@@ -422,9 +445,61 @@ class SearchFilterTests(TestCase):
                 ]
             )
 
+        reload_module(filters)
+
+
+class AttributeModel(models.Model):
+    label = models.CharField(max_length=32)
+
+
+class SearchFilterModelM2M(models.Model):
+    title = models.CharField(max_length=20)
+    text = models.CharField(max_length=100)
+    attributes = models.ManyToManyField(AttributeModel)
+
+
+class SearchFilterM2MSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SearchFilterModelM2M
+
+
+class SearchFilterM2MTests(TestCase):
+    def setUp(self):
+        # Sequence of title/text/attributes is:
+        #
+        # z   abc [1, 2, 3]
+        # zz  bcd [1, 2, 3]
+        # zzz cde [1, 2, 3]
+        # ...
+        for idx in range(3):
+            label = 'w' * (idx + 1)
+            AttributeModel(label=label)
+
+        for idx in range(10):
+            title = 'z' * (idx + 1)
+            text = (
+                chr(idx + ord('a')) +
+                chr(idx + ord('b')) +
+                chr(idx + ord('c'))
+            )
+            SearchFilterModelM2M(title=title, text=text).save()
+        SearchFilterModelM2M.objects.get(title='zz').attributes.add(1, 2, 3)
+
+    def test_m2m_search(self):
+        class SearchListView(generics.ListAPIView):
+            queryset = SearchFilterModelM2M.objects.all()
+            serializer_class = SearchFilterM2MSerializer
+            filter_backends = (filters.SearchFilter,)
+            search_fields = ('=title', 'text', 'attributes__label')
+
+        view = SearchListView.as_view()
+        request = factory.get('/', {'search': 'zz'})
+        response = view(request)
+        self.assertEqual(len(response.data), 1)
+
 
 class OrderingFilterModel(models.Model):
-    title = models.CharField(max_length=20)
+    title = models.CharField(max_length=20, verbose_name='verbose title')
     text = models.CharField(max_length=100)
 
 
@@ -467,6 +542,7 @@ class DjangoFilterOrderingTests(TestCase):
         for d in data:
             DjangoFilterOrderingModel.objects.create(**d)
 
+    @unittest.skipUnless(django_filters, 'django-filter not installed')
     def test_default_ordering(self):
         class DjangoFilterOrderingView(generics.ListAPIView):
             serializer_class = DjangoFilterOrderingSerializer
@@ -641,7 +717,9 @@ class OrderingFilterTests(TestCase):
         )
 
     def test_ordering_with_nonstandard_ordering_param(self):
-        with temporary_setting('ORDERING_PARAM', 'order', filters):
+        with override_settings(REST_FRAMEWORK={'ORDERING_PARAM': 'order'}):
+            reload_module(filters)
+
             class OrderingListView(generics.ListAPIView):
                 queryset = OrderingFilterModel.objects.all()
                 serializer_class = OrderingFilterSerializer
@@ -660,6 +738,21 @@ class OrderingFilterTests(TestCase):
                     {'id': 3, 'title': 'xwv', 'text': 'cde'},
                 ]
             )
+
+        reload_module(filters)
+
+    def test_get_template_context(self):
+        class OrderingListView(generics.ListAPIView):
+            ordering_fields = '__all__'
+            serializer_class = OrderingFilterSerializer
+            queryset = OrderingFilterModel.objects.all()
+            filter_backends = (filters.OrderingFilter,)
+
+        request = factory.get('/', {'ordering': 'title'}, HTTP_ACCEPT='text/html')
+        view = OrderingListView.as_view()
+        response = view(request)
+
+        self.assertContains(response, 'verbose title')
 
 
 class SensitiveOrderingFilterModel(models.Model):

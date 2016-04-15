@@ -28,7 +28,7 @@ There are two mandatory arguments to the `register()` method:
 
 Optionally, you may also specify an additional argument:
 
-* `base_name` - The base to use for the URL names that are created.  If unset the basename will be automatically generated based on the `model` or `queryset` attribute on the viewset, if it has one.  Note that if the viewset does not include a `model` or `queryset` attribute then you must set `base_name` when registering the viewset.
+* `base_name` - The base to use for the URL names that are created.  If unset the basename will be automatically generated based on the `queryset` attribute of the viewset, if it has one.  Note that if the viewset does not include a `queryset` attribute then you must set `base_name` when registering the viewset.
 
 The example above would generate the following URL patterns:
 
@@ -60,7 +60,7 @@ For example, you can append `router.urls` to a list of existing views…
     router.register(r'accounts', AccountViewSet)
     
     urlpatterns = [
-        url(r'^forgot-password/$, ForgotPasswordFormView.as_view(),
+        url(r'^forgot-password/$', ForgotPasswordFormView.as_view()),
     ]
     
     urlpatterns += router.urls
@@ -68,15 +68,15 @@ For example, you can append `router.urls` to a list of existing views…
 Alternatively you can use Django's `include` function, like so…
 
     urlpatterns = [
-        url(r'^forgot-password/$, ForgotPasswordFormView.as_view(),
-        url(r'^', include(router.urls))
+        url(r'^forgot-password/$', ForgotPasswordFormView.as_view()),
+        url(r'^', include(router.urls)),
     ]
 
 Router URL patterns can also be namespaces.
 
     urlpatterns = [
-        url(r'^forgot-password/$, ForgotPasswordFormView.as_view(),
-        url(r'^api/', include(router.urls, namespace='api'))
+        url(r'^forgot-password/$', ForgotPasswordFormView.as_view()),
+        url(r'^api/', include(router.urls, namespace='api')),
     ]
 
 If using namespacing with hyperlinked serializers you'll also need to ensure that any `view_name` parameters on the serializers correctly reflect the namespace. In the example above you'd need to include a parameter such as `view_name='api:user-detail'` for serializer fields hyperlinked to the user detail view.
@@ -290,24 +290,24 @@ The following third party packages are also available.
 
 The [drf-nested-routers package][drf-nested-routers] provides routers and relationship fields for working with nested resources.
 
-## wq.db
+## ModelRouter (wq.db.rest)
 
-The [wq.db package][wq.db] provides an advanced [Router][wq.db-router] class (and singleton instance) that extends `DefaultRouter` with a `register_model()` API. Much like Django's `admin.site.register`, the only required argument to `app.router.register_model` is a model class.  Reasonable defaults for a url prefix and viewset will be inferred from the model and global configuration.
+The [wq.db package][wq.db] provides an advanced [ModelRouter][wq.db-router] class (and singleton instance) that extends `DefaultRouter` with a `register_model()` API. Much like Django's `admin.site.register`, the only required argument to `rest.router.register_model` is a model class.  Reasonable defaults for a url prefix, serializer, and viewset will be inferred from the model and global configuration.
 
-    from wq.db.rest import app
+    from wq.db import rest
     from myapp.models import MyModel
 
-    app.router.register_model(MyModel)
+    rest.router.register_model(MyModel)
 
 ## DRF-extensions
 
 The [`DRF-extensions` package][drf-extensions] provides [routers][drf-extensions-routers] for creating [nested viewsets][drf-extensions-nested-viewsets], [collection level controllers][drf-extensions-collection-level-controllers] with [customizable endpoint names][drf-extensions-customizable-endpoint-names].
 
 [cite]: http://guides.rubyonrails.org/routing.html
-[route-decorators]: viewsets.html#marking-extra-actions-for-routing
+[route-decorators]: viewsets.md#marking-extra-actions-for-routing
 [drf-nested-routers]: https://github.com/alanjds/drf-nested-routers
 [wq.db]: http://wq.io/wq.db
-[wq.db-router]: http://wq.io/docs/app.py
+[wq.db-router]: http://wq.io/docs/router
 [drf-extensions]: http://chibisov.github.io/drf-extensions/docs/
 [drf-extensions-routers]: http://chibisov.github.io/drf-extensions/docs/#routers
 [drf-extensions-nested-viewsets]: http://chibisov.github.io/drf-extensions/docs/#nested-routes

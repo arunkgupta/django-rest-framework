@@ -1,8 +1,14 @@
 # coding: utf-8
 from __future__ import unicode_literals
+
+import pickle
+
+import pytest
+
 from rest_framework import serializers
 from rest_framework.compat import unicode_repr
-import pytest
+
+from .utils import MockObject
 
 
 # Tests for core functionality.
@@ -44,6 +50,16 @@ class TestSerializer:
         serializer = self.Serializer(instance)
         with pytest.raises(AttributeError):
             serializer.data
+
+    def test_data_access_before_save_raises_error(self):
+        def create(validated_data):
+            return validated_data
+        serializer = self.Serializer(data={'char': 'abc', 'integer': 123})
+        serializer.create = create
+        assert serializer.is_valid()
+        assert serializer.data == {'char': 'abc', 'integer': 123}
+        with pytest.raises(AssertionError):
+            serializer.save()
 
 
 class TestValidateMethod:
@@ -216,3 +232,80 @@ class TestUnicodeRepr:
         instance = ExampleObject()
         serializer = ExampleSerializer(instance)
         repr(serializer)  # Should not error.
+
+
+class TestNotRequiredOutput:
+    def test_not_required_output_for_dict(self):
+        """
+        'required=False' should allow a dictionary key to be missing in output.
+        """
+        class ExampleSerializer(serializers.Serializer):
+            omitted = serializers.CharField(required=False)
+            included = serializers.CharField()
+
+        serializer = ExampleSerializer(data={'included': 'abc'})
+        serializer.is_valid()
+        assert serializer.data == {'included': 'abc'}
+
+    def test_not_required_output_for_object(self):
+        """
+        'required=False' should allow an object attribute to be missing in output.
+        """
+        class ExampleSerializer(serializers.Serializer):
+            omitted = serializers.CharField(required=False)
+            included = serializers.CharField()
+
+            def create(self, validated_data):
+                return MockObject(**validated_data)
+
+        serializer = ExampleSerializer(data={'included': 'abc'})
+        serializer.is_valid()
+        serializer.save()
+        assert serializer.data == {'included': 'abc'}
+
+    def test_default_required_output_for_dict(self):
+        """
+        'default="something"' should require dictionary key.
+
+        We need to handle this as the field will have an implicit
+        'required=False', but it should still have a value.
+        """
+        class ExampleSerializer(serializers.Serializer):
+            omitted = serializers.CharField(default='abc')
+            included = serializers.CharField()
+
+        serializer = ExampleSerializer({'included': 'abc'})
+        with pytest.raises(KeyError):
+            serializer.data
+
+    def test_default_required_output_for_object(self):
+        """
+        'default="something"' should require object attribute.
+
+        We need to handle this as the field will have an implicit
+        'required=False', but it should still have a value.
+        """
+        class ExampleSerializer(serializers.Serializer):
+            omitted = serializers.CharField(default='abc')
+            included = serializers.CharField()
+
+        instance = MockObject(included='abc')
+        serializer = ExampleSerializer(instance)
+        with pytest.raises(AttributeError):
+            serializer.data
+
+
+class TestCacheSerializerData:
+    def test_cache_serializer_data(self):
+        """
+        Caching serializer data with pickle will drop the serializer info,
+        but does preserve the data itself.
+        """
+        class ExampleSerializer(serializers.Serializer):
+            field1 = serializers.CharField()
+            field2 = serializers.CharField()
+
+        serializer = ExampleSerializer({'field1': 'a', 'field2': 'b'})
+        pickled = pickle.dumps(serializer.data)
+        data = pickle.loads(pickled)
+        assert data == {'field1': 'a', 'field2': 'b'}

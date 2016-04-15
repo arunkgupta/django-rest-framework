@@ -5,11 +5,12 @@ pre {
 }
 
 .dropdown .dropdown-menu {
-    display: none;
+  display: none;
+  overflow-y: scroll;
 }
 
 .dropdown.open .dropdown-menu {
-    display: block;
+  display: block;
 }
 
 @media (max-width: 480px) {
@@ -36,15 +37,8 @@ body.index-page #main-content iframe.github-star-button {
     margin-right: -15px;
 }
 
-/* Tweet button */
-body.index-page #main-content iframe.twitter-share-button {
-    float: right;
-    margin-top: -12px;
-    margin-right: 8px;
-}
-
-/* Travis CI badge */
-body.index-page #main-content img.travis-build-image {
+/* Travis CI and PyPI badge */
+body.index-page #main-content img.status-badge {
     float: right;
     margin-right: 8px;
     margin-top: -11px;
@@ -171,6 +165,25 @@ body{
   background-attachment: fixed;
 }
 
+
+#main-content h1:first-of-type {
+    margin-top: 0
+}
+
+#main-content h1, #main-content h2 {
+    font-weight: 300;
+    margin-top: 20px
+}
+
+#main-content h3, #main-content h4, #main-content h5 {
+    font-weight: 300;
+    margin-top: 15px
+}
+
+#main-content img {
+    display: block;
+    margin: 40px auto;
+}
 /* custom navigation styles */
 
 .navbar .navbar-inner{
@@ -237,6 +250,10 @@ body a:hover{
      .navbar .navbar-inner .container-fluid{
       max-width: 1110px;
      }
+}
+
+h1 code, h2 code, h3 code, h4 code, h5 code {
+  color: #333;
 }
 
 /* sticky footer and footer */
@@ -391,4 +408,12 @@ ul.sponsor.silver li a {
 ul.sponsor {
     list-style: none;
     display: block;
+}
+
+#mkdocs_search_modal article p{
+  word-wrap: break-word;
+}
+
+.toclink {
+  color: #333;
 }

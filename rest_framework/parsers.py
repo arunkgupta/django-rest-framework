@@ -6,20 +6,22 @@ on the request, such as form content or json encoded data.
 """
 from __future__ import unicode_literals
 
+import json
+
 from django.conf import settings
 from django.core.files.uploadhandler import StopFutureHandlers
 from django.http import QueryDict
-from django.http.multipartparser import MultiPartParser as DjangoMultiPartParser
-from django.http.multipartparser import MultiPartParserError, parse_header, ChunkIter
+from django.http.multipartparser import \
+    MultiPartParser as DjangoMultiPartParser
+from django.http.multipartparser import (
+    ChunkIter, MultiPartParserError, parse_header
+)
 from django.utils import six
-from django.utils.six.moves.urllib import parse as urlparse
 from django.utils.encoding import force_text
-from rest_framework.compat import etree, yaml
-from rest_framework.exceptions import ParseError
+from django.utils.six.moves.urllib import parse as urlparse
+
 from rest_framework import renderers
-import json
-import datetime
-import decimal
+from rest_framework.exceptions import ParseError
 
 
 class DataAndFiles(object):
@@ -33,7 +35,6 @@ class BaseParser(object):
     All parsers should extend `BaseParser`, specifying a `media_type`
     attribute, and overriding the `.parse()` method.
     """
-
     media_type = None
 
     def parse(self, stream, media_type=None, parser_context=None):
@@ -49,7 +50,6 @@ class JSONParser(BaseParser):
     """
     Parses JSON-serialized data.
     """
-
     media_type = 'application/json'
     renderer_class = renderers.JSONRenderer
 
@@ -67,34 +67,10 @@ class JSONParser(BaseParser):
             raise ParseError('JSON parse error - %s' % six.text_type(exc))
 
 
-class YAMLParser(BaseParser):
-    """
-    Parses YAML-serialized data.
-    """
-
-    media_type = 'application/yaml'
-
-    def parse(self, stream, media_type=None, parser_context=None):
-        """
-        Parses the incoming bytestream as YAML and returns the resulting data.
-        """
-        assert yaml, 'YAMLParser requires pyyaml to be installed'
-
-        parser_context = parser_context or {}
-        encoding = parser_context.get('encoding', settings.DEFAULT_CHARSET)
-
-        try:
-            data = stream.read().decode(encoding)
-            return yaml.safe_load(data)
-        except (ValueError, yaml.parser.ParserError) as exc:
-            raise ParseError('YAML parse error - %s' % six.text_type(exc))
-
-
 class FormParser(BaseParser):
     """
     Parser for form data.
     """
-
     media_type = 'application/x-www-form-urlencoded'
 
     def parse(self, stream, media_type=None, parser_context=None):
@@ -112,7 +88,6 @@ class MultiPartParser(BaseParser):
     """
     Parser for multipart form data, which may include file data.
     """
-
     media_type = 'multipart/form-data'
 
     def parse(self, stream, media_type=None, parser_context=None):
@@ -138,78 +113,6 @@ class MultiPartParser(BaseParser):
             raise ParseError('Multipart form parse error - %s' % six.text_type(exc))
 
 
-class XMLParser(BaseParser):
-    """
-    XML parser.
-    """
-
-    media_type = 'application/xml'
-
-    def parse(self, stream, media_type=None, parser_context=None):
-        """
-        Parses the incoming bytestream as XML and returns the resulting data.
-        """
-        assert etree, 'XMLParser requires defusedxml to be installed'
-
-        parser_context = parser_context or {}
-        encoding = parser_context.get('encoding', settings.DEFAULT_CHARSET)
-        parser = etree.DefusedXMLParser(encoding=encoding)
-        try:
-            tree = etree.parse(stream, parser=parser, forbid_dtd=True)
-        except (etree.ParseError, ValueError) as exc:
-            raise ParseError('XML parse error - %s' % six.text_type(exc))
-        data = self._xml_convert(tree.getroot())
-
-        return data
-
-    def _xml_convert(self, element):
-        """
-        convert the xml `element` into the corresponding python object
-        """
-
-        children = list(element)
-
-        if len(children) == 0:
-            return self._type_convert(element.text)
-        else:
-            # if the fist child tag is list-item means all children are list-item
-            if children[0].tag == "list-item":
-                data = []
-                for child in children:
-                    data.append(self._xml_convert(child))
-            else:
-                data = {}
-                for child in children:
-                    data[child.tag] = self._xml_convert(child)
-
-            return data
-
-    def _type_convert(self, value):
-        """
-        Converts the value returned by the XMl parse into the equivalent
-        Python type
-        """
-        if value is None:
-            return value
-
-        try:
-            return datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
-        except ValueError:
-            pass
-
-        try:
-            return int(value)
-        except ValueError:
-            pass
-
-        try:
-            return decimal.Decimal(value)
-        except decimal.InvalidOperation:
-            pass
-
-        return value
-
-
 class FileUploadParser(BaseParser):
     """
     Parser for file upload data.
@@ -219,12 +122,11 @@ class FileUploadParser(BaseParser):
     def parse(self, stream, media_type=None, parser_context=None):
         """
         Treats the incoming bytestream as a raw file upload and returns
-        a `DateAndFiles` object.
+        a `DataAndFiles` object.
 
         `.data` will be None (we expect request body to be a file content).
         `.files` will be a `QueryDict` containing one 'file' element.
         """
-
         parser_context = parser_context or {}
         request = parser_context['request']
         encoding = parser_context.get('encoding', settings.DEFAULT_CHARSET)
@@ -250,7 +152,7 @@ class FileUploadParser(BaseParser):
                                               None,
                                               encoding)
             if result is not None:
-                return DataAndFiles(None, {'file': result[1]})
+                return DataAndFiles({}, {'file': result[1]})
 
         # This is the standard case.
         possible_sizes = [x.chunk_size for x in upload_handlers if x.chunk_size]
@@ -277,7 +179,7 @@ class FileUploadParser(BaseParser):
         for index, handler in enumerate(upload_handlers):
             file_obj = handler.file_complete(counters[index])
             if file_obj:
-                return DataAndFiles(None, {'file': file_obj})
+                return DataAndFiles({}, {'file': file_obj})
         raise ParseError("FileUpload parse error - "
                          "none of upload handlers can handle the stream")
 
@@ -298,7 +200,7 @@ class FileUploadParser(BaseParser):
             if 'filename*' in filename_parm:
                 return self.get_encoded_filename(filename_parm)
             return force_text(filename_parm['filename'])
-        except (AttributeError, KeyError):
+        except (AttributeError, KeyError, ValueError):
             pass
 
     def get_encoded_filename(self, filename_parm):

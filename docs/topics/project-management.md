@@ -58,15 +58,18 @@ The following template should be used for the description of the issue, and serv
     #### New members.
     
     If you wish to be considered for this or a future date, please comment against this or subsequent issues.
+    
+    To modify this process for future maintenance cycles make a pull request to the [project management](http://www.django-rest-framework.org/topics/project-management/) documentation.
 
 #### Responsibilities of team members
 
 Team members have the following responsibilities.
 
-* Add triage labels and milestones to tickets.
 * Close invalid or resolved tickets.
+* Add triage labels and milestones to tickets.
 * Merge finalized pull requests.
 * Build and deploy the documentation, using `mkdocs gh-deploy`.
+* Build and update the included translation packs.
 
 Further notes for maintainers:
 
@@ -94,9 +97,15 @@ The following template should be used for the description of the issue, and serv
     Release manager is @***.
     Pull request is #***.
 
+    During development cycle:
+
+    - [ ] Upload the new content to be translated to [transifex](http://www.django-rest-framework.org/topics/project-management/#translations).
+
+
     Checklist:
 
     - [ ] Create pull request for [release notes](https://github.com/tomchristie/django-rest-framework/blob/master/docs/topics/release-notes.md) based on the [*.*.* milestone](https://github.com/tomchristie/django-rest-framework/milestones/***).
+    - [ ] Update the translations from [transifex](http://www.django-rest-framework.org/topics/project-management/#translations).
     - [ ] Ensure the pull request increments the version to `*.*.*` in [`restframework/__init__.py`](https://github.com/tomchristie/django-rest-framework/blob/master/rest_framework/__init__.py).
     - [ ] Confirm with @tomchristie that release is finalized and ready to go.
     - [ ] Ensure that release date is included in pull request.
@@ -107,8 +116,67 @@ The following template should be used for the description of the issue, and serv
     - [ ] Make a release announcement on the [discussion group](https://groups.google.com/forum/?fromgroups#!forum/django-rest-framework).
     - [ ] Make a release announcement on twitter.
     - [ ] Close the milestone on GitHub.
+    
+    To modify this process for future releases make a pull request to the [project management](http://www.django-rest-framework.org/topics/project-management/) documentation.
 
 When pushing the release to PyPI ensure that your environment has been installed from our development `requirement.txt`, so that documentation and PyPI installs are consistently being built against a pinned set of packages.
+
+---
+
+## Translations
+
+The maintenance team are responsible for managing the translation packs include in REST framework. Translating the source strings into multiple languages is managed through the [transifex service][transifex-project].
+
+### Managing Transifex
+
+The [official Transifex client][transifex-client] is used to upload and download translations to Transifex. The client is installed using pip:
+
+    pip install transifex-client
+
+To use it you'll need a login to Transifex which has a password, and you'll need to have administrative access to the Transifex project. You'll need to create a `~/.transifexrc` file which contains your credentials.
+
+    [https://www.transifex.com]
+    username = ***
+    token = ***
+    password = ***
+    hostname = https://www.transifex.com
+
+### Upload new source files
+
+When any user visible strings are changed, they should be uploaded to Transifex so that the translators can start to translate them. To do this, just run:
+
+    # 1. Update the source django.po file, which is the US English version.
+    cd rest_framework
+    django-admin.py makemessages -l en_US
+    # 2. Push the source django.po file to Transifex.
+    cd ..
+    tx push -s
+
+When pushing source files, Transifex will update the source strings of a resource to match those from the new source file.
+
+Here's how differences between the old and new source files will be handled:
+
+* New strings will be added.
+* Modified strings will be added as well.
+* Strings which do not exist in the new source file will be removed from the database, along with their translations. If that source strings gets re-added later then [Transifex Translation Memory][translation-memory] will automatically include the translation string.
+
+### Download translations
+
+When a translator has finished translating their work needs to be downloaded from Transifex into the REST framework repository. To do this, run:
+
+    # 3. Pull the translated django.po files from Transifex.
+    tx pull -a
+    cd rest_framework
+    # 4. Compile the binary .mo files for all supported languages.
+    django-admin.py compilemessages
+
+---
+
+## Project requirements
+
+All our test requirements are pinned to exact versions, in order to ensure that our test runs are reproducible. We maintain the requirements in the `requirements` directory. The requirements files are referenced from the `tox.ini` configuration file, ensuring we have a single source of truth for package versions used in testing.
+
+Package upgrades should generally be treated as isolated pull requests. You can check if there are any packages available at a newer version, by using the `pip list --outdated`.
 
 ---
 
@@ -126,9 +194,13 @@ The following issues still need to be addressed:
 * Ensure `@jamie` has back-up access to the `django-rest-framework.org` domain setup and admin.
 * Document ownership of the [live example][sandbox] API.
 * Document ownership of the [mailing list][mailing-list] and IRC channel.
+* Document ownership and management of the security mailing list.
 
 [bus-factor]: http://en.wikipedia.org/wiki/Bus_factor
 [un-triaged]: https://github.com/tomchristie/django-rest-framework/issues?q=is%3Aopen+no%3Alabel
+[transifex-project]: https://www.transifex.com/projects/p/django-rest-framework/
+[transifex-client]: https://pypi.python.org/pypi/transifex-client
+[translation-memory]: http://docs.transifex.com/guides/tm#let-tm-automatically-populate-translations
 [github-org]: https://github.com/tomchristie/django-rest-framework/issues/2162
 [sandbox]: http://restframework.herokuapp.com/
 [mailing-list]: https://groups.google.com/forum/#!forum/django-rest-framework

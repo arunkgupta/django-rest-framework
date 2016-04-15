@@ -188,27 +188,33 @@ To submit new content, [open an issue][drf-create-issue] or [create a pull reque
 * [hawkrest][hawkrest] - Provides Hawk HTTP Authorization.
 * [djangorestframework-httpsignature][djangorestframework-httpsignature] - Provides an easy to use HTTP Signature Authentication mechanism.
 * [djoser][djoser] - Provides a set of views to handle basic actions such as registration, login, logout, password reset and account activation.
+* [django-rest-auth][django-rest-auth] - Provides a set of REST API endpoints for registration, authentication (including social media authentication), password reset, retrieve and update user details, etc.
 
 ### Permissions
 
 * [drf-any-permissions][drf-any-permissions] - Provides alternative permission handling.
 * [djangorestframework-composed-permissions][djangorestframework-composed-permissions] - Provides a simple way to define complex permissions.
 * [rest_condition][rest-condition] - Another extension for building complex permissions in a simple and convenient way.
+* [dry-rest-permissions][dry-rest-permissions] - Provides a simple way to define permissions for individual api actions.
 
 ### Serializers
 
 * [django-rest-framework-mongoengine][django-rest-framework-mongoengine] - Serializer class that supports using MongoDB as the storage layer for Django REST framework.
 * [djangorestframework-gis][djangorestframework-gis] - Geographic add-ons
 * [djangorestframework-hstore][djangorestframework-hstore] - Serializer class to support django-hstore DictionaryField model field and its schema-mode feature.
+* [djangorestframework-jsonapi][djangorestframework-jsonapi] - Provides a parser, renderer, serializers, and other tools to help build an API that is compliant with the jsonapi.org spec.
+* [html-json-forms][html-json-forms]: Provides an algorithm and serializer to process HTML JSON Form submissions per the (inactive) spec.
 
 ### Serializer fields
 
 * [drf-compound-fields][drf-compound-fields] - Provides "compound" serializer fields, such as lists of simple values.
 * [django-extra-fields][django-extra-fields] - Provides extra serializer fields.
+* [django-versatileimagefield][django-versatileimagefield] - Provides a drop-in replacement for Django's stock `ImageField` that makes it easy to serve images in multiple sizes/renditions from a single field. For DRF-specific implementation docs, [click here][django-versatileimagefield-drf-docs].
 
 ### Views
 
 * [djangorestframework-bulk][djangorestframework-bulk] - Implements generic view mixins as well as some common concrete generic views to allow to apply bulk operations via API requests.
+* [django-rest-multiple-models][django-rest-multiple-models] - Provides a generic view (and mixin) for sending multiple serialized models and/or querysets via a single API request.
 
 ### Routers
 
@@ -218,26 +224,36 @@ To submit new content, [open an issue][drf-create-issue] or [create a pull reque
 ### Parsers
 
 * [djangorestframework-msgpack][djangorestframework-msgpack] - Provides MessagePack renderer and parser support.
+* [djangorestframework-jsonapi][djangorestframework-jsonapi] - Provides a parser, renderer, serializers, and other tools to help build an API that is compliant with the jsonapi.org spec.
 * [djangorestframework-camel-case][djangorestframework-camel-case] - Provides camel case JSON renderers and parsers.
 
 ### Renderers
 
 * [djangorestframework-csv][djangorestframework-csv] - Provides CSV renderer support.
+* [djangorestframework-jsonapi][djangorestframework-jsonapi] - Provides a parser, renderer, serializers, and other tools to help build an API that is compliant with the jsonapi.org spec.
 * [drf_ujson][drf_ujson] - Implements JSON rendering using the UJSON package.
 * [rest-pandas][rest-pandas] - Pandas DataFrame-powered renderers including Excel, CSV, and SVG formats.
 
 ### Filtering
 
 * [djangorestframework-chain][djangorestframework-chain] - Allows arbitrary chaining of both relations and lookup filters.
+* [django-url-filter][django-url-filter] - Allows a safe way to filter data via human-friendly URLs. It is a generic library which is not tied to DRF but it provides easy integration with DRF.
 
 ### Misc
 
+* [cookiecutter-django-rest][cookiecutter-django-rest] - A cookiecutter template that takes care of the setup and configuration so you can focus on making your REST apis awesome.
 * [djangorestrelationalhyperlink][djangorestrelationalhyperlink] - A hyperlinked serialiser that can can be used to alter relationships via hyperlinks, but otherwise like a hyperlink model serializer.
 * [django-rest-swagger][django-rest-swagger] - An API documentation generator for Swagger UI.
 * [django-rest-framework-proxy][django-rest-framework-proxy] - Proxy to redirect incoming request to another API server.
-* [gaiarestframework][gaiarestframework] - Utils for django-rest-framewok
+* [gaiarestframework][gaiarestframework] - Utils for django-rest-framework
 * [drf-extensions][drf-extensions] - A collection of custom extensions
-* [ember-data-django-rest-adapter][ember-data-django-rest-adapter] - An ember-data adapter
+* [ember-django-adapter][ember-django-adapter] - An adapter for working with Ember.js
+* [django-versatileimagefield][django-versatileimagefield] - Provides a drop-in replacement for Django's stock `ImageField` that makes it easy to serve images in multiple sizes/renditions from a single field. For DRF-specific implementation docs, [click here][django-versatileimagefield-drf-docs].
+* [drf-tracking][drf-tracking] - Utilities to track requests to DRF API views.
+* [django-rest-framework-braces][django-rest-framework-braces] - Collection of utilities for working with Django Rest Framework. The most notable ones are [FormSerializer](https://django-rest-framework-braces.readthedocs.org/en/latest/overview.html#formserializer) and [SerializerForm](https://django-rest-framework-braces.readthedocs.org/en/latest/overview.html#serializerform), which are adapters between DRF serializers and Django forms.
+* [drf-haystack][drf-haystack] - Haystack search for Django Rest Framework
+* [django-rest-framework-version-transforms][django-rest-framework-version-transforms] - Enables the use of delta transformations for versioning of DRF resource representations.
+* [django-rest-messaging][django-rest-messaging], [django-rest-messaging-centrifugo][django-rest-messaging-centrifugo] and [django-rest-messaging-js][django-rest-messaging-js] - A real-time pluggable messaging service using DRM.
 
 ## Other Resources
 
@@ -263,6 +279,10 @@ To submit new content, [open an issue][drf-create-issue] or [create a pull reque
 
 * [Web API performance: profiling Django REST framework][web-api-performance-profiling-django-rest-framework]
 * [API Development with Django and Django REST Framework][api-development-with-django-and-django-rest-framework]
+* [Blog posts about Django REST framework][medium-django-rest-framework]
+
+### Documentations
+* [Classy Django REST Framework][cdrf.co]
 
 [cite]: http://www.software-ecosystems.com/Software_Ecosystems/Ecosystems.html
 [cookiecutter]: https://github.com/jpadilla/cookiecutter-django-rest-framework
@@ -279,6 +299,7 @@ To submit new content, [open an issue][drf-create-issue] or [create a pull reque
 [drf-create-issue]: https://github.com/tomchristie/django-rest-framework/issues/new
 [authentication]: ../api-guide/authentication.md
 [permissions]: ../api-guide/permissions.md
+[third-party-resources]: ../topics/third-party-resources/#existing-third-party-packages
 [discussion-group]: https://groups.google.com/forum/#!forum/django-rest-framework
 [djangorestframework-digestauth]: https://github.com/juanriaza/django-rest-framework-digestauth
 [django-oauth-toolkit]: https://github.com/evonove/django-oauth-toolkit
@@ -296,6 +317,7 @@ To submit new content, [open an issue][drf-create-issue] or [create a pull reque
 [drf-compound-fields]: https://github.com/estebistec/drf-compound-fields
 [django-extra-fields]: https://github.com/Hipo/drf-extra-fields
 [djangorestframework-bulk]: https://github.com/miki725/django-rest-framework-bulk
+[django-rest-multiple-models]: https://github.com/Axiologue/DjangoRestMultipleModels
 [drf-nested-routers]: https://github.com/alanjds/drf-nested-routers
 [wq.db.rest]: http://wq.io/docs/about-rest
 [djangorestframework-msgpack]: https://github.com/juanriaza/django-rest-framework-msgpack
@@ -309,7 +331,7 @@ To submit new content, [open an issue][drf-create-issue] or [create a pull reque
 [django-rest-framework-proxy]: https://github.com/eofs/django-rest-framework-proxy
 [gaiarestframework]: https://github.com/AppsFuel/gaiarestframework
 [drf-extensions]: https://github.com/chibisov/drf-extensions
-[ember-data-django-rest-adapter]: https://github.com/toranb/ember-data-django-rest-adapter
+[ember-django-adapter]: https://github.com/dustinfarris/ember-django-adapter
 [beginners-guide-to-the-django-rest-framework]: http://code.tutsplus.com/tutorials/beginners-guide-to-the-django-rest-framework--cms-19786
 [getting-started-with-django-rest-framework-and-angularjs]: http://blog.kevinastone.com/getting-started-with-django-rest-framework-and-angularjs.html
 [end-to-end-web-app-with-django-rest-framework-angularjs]: http://blog.mourafiq.com/post/55034504632/end-to-end-web-app-with-django-rest-framework
@@ -324,3 +346,20 @@ To submit new content, [open an issue][drf-create-issue] or [create a pull reque
 [django-rest-framework-and-angularjs-video]: http://www.youtube.com/watch?v=q8frbgtj020
 [web-api-performance-profiling-django-rest-framework]: http://dabapps.com/blog/api-performance-profiling-django-rest-framework/
 [api-development-with-django-and-django-rest-framework]: https://bnotions.com/api-development-with-django-and-django-rest-framework/
+[django-rest-auth]: https://github.com/Tivix/django-rest-auth/
+[django-versatileimagefield]: https://github.com/WGBH/django-versatileimagefield
+[django-versatileimagefield-drf-docs]:http://django-versatileimagefield.readthedocs.org/en/latest/drf_integration.html
+[cdrf.co]:http://www.cdrf.co
+[drf-tracking]: https://github.com/aschn/drf-tracking
+[django-rest-framework-braces]: https://github.com/dealertrack/django-rest-framework-braces
+[dry-rest-permissions]: https://github.com/Helioscene/dry-rest-permissions
+[django-url-filter]: https://github.com/miki725/django-url-filter
+[cookiecutter-django-rest]:  https://github.com/agconti/cookiecutter-django-rest
+[drf-haystack]: http://drf-haystack.readthedocs.org/en/latest/
+[django-rest-framework-version-transforms]: https://github.com/mrhwick/django-rest-framework-version-transforms
+[djangorestframework-jsonapi]: https://github.com/django-json-api/django-rest-framework-json-api
+[html-json-forms]: https://github.com/wq/html-json-forms
+[django-rest-messaging]: https://github.com/raphaelgyory/django-rest-messaging
+[django-rest-messaging-centrifugo]: https://github.com/raphaelgyory/django-rest-messaging-centrifugo
+[django-rest-messaging-js]: https://github.com/raphaelgyory/django-rest-messaging-js
+[medium-django-rest-framework]: https://medium.com/django-rest-framework

@@ -2,8 +2,10 @@
 Tests to cover bulk create and update using serializers.
 """
 from __future__ import unicode_literals
+
 from django.test import TestCase
 from django.utils import six
+
 from rest_framework import serializers
 
 
@@ -101,7 +103,7 @@ class BulkCreateSerializerTests(TestCase):
         serializer = self.BookSerializer(data=data, many=True)
         self.assertEqual(serializer.is_valid(), False)
 
-        expected_errors = {'non_field_errors': ['Expected a list of items but got type `int`.']}
+        expected_errors = {'non_field_errors': ['Expected a list of items but got type "int".']}
 
         self.assertEqual(serializer.errors, expected_errors)
 
@@ -118,6 +120,6 @@ class BulkCreateSerializerTests(TestCase):
         serializer = self.BookSerializer(data=data, many=True)
         self.assertEqual(serializer.is_valid(), False)
 
-        expected_errors = {'non_field_errors': ['Expected a list of items but got type `dict`.']}
+        expected_errors = {'non_field_errors': ['Expected a list of items but got type "dict".']}
 
         self.assertEqual(serializer.errors, expected_errors)

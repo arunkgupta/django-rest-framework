@@ -18,7 +18,7 @@ The handled exceptions are:
 
 In each case, REST framework will return a response with an appropriate status code and content-type.  The body of the response will include any additional details regarding the nature of the error.
 
-By default all error responses will include a key `detail` in the body of the response, but other keys may also be included.
+Most error responses will include a key `detail` in the body of the response.
 
 For example, the following request:
 
@@ -33,11 +33,21 @@ Might receive an error response indicating that the `DELETE` method is not allow
 
     {"detail": "Method 'DELETE' not allowed."}
 
+Validation errors are handled slightly differently, and will include the field names as the keys in the response. If the validation error was not specific to a particular field then it will use the "non_field_errors" key, or whatever string value has been set for the `NON_FIELD_ERRORS_KEY` setting.
+
+Any example validation error might look like this:
+
+    HTTP/1.1 400 Bad Request
+    Content-Type: application/json
+    Content-Length: 94
+
+    {"amount": ["A valid integer is required."], "description": ["This field may not be blank."]}
+
 ## Custom exception handling
 
 You can implement custom exception handling by creating a handler function that converts exceptions raised in your API views into response objects.  This allows you to control the style of error responses used by your API.
 
-The function must take a single argument, which is the exception to be handled, and should either return a `Response` object, or return `None` if the exception cannot be handled.  If the handler returns `None` then the exception will be re-raised and Django will return a standard HTTP 500 'server error' response.
+The function must take a pair of arguments, this first is the exception to be handled, and the second is a dictionary containing any extra context such as the view currently being handled. The exception handler function should either return a `Response` object, or return `None` if the exception cannot be handled.  If the handler returns `None` then the exception will be re-raised and Django will return a standard HTTP 500 'server error' response.
 
 For example, you might want to ensure that all error responses include the HTTP status code in the body of the response, like so:
 
@@ -51,16 +61,18 @@ In order to alter the style of the response, you could write the following custo
 
     from rest_framework.views import exception_handler
 
-    def custom_exception_handler(exc):
+    def custom_exception_handler(exc, context):
         # Call REST framework's default exception handler first,
         # to get the standard error response.
-        response = exception_handler(exc)
+        response = exception_handler(exc, context)
 
         # Now add the HTTP status code to the response.
         if response is not None:
             response.data['status_code'] = response.status_code
 
         return response
+
+The context argument is not used by the default handler, but can be useful if the exception handler needs further information such as the view currently being handled, which can be accessed as `context['view']`.
 
 The exception handler must also be configured in your settings, using the `EXCEPTION_HANDLER` setting key. For example:
 
@@ -128,6 +140,14 @@ Raised when an authenticated request fails the permission checks.
 
 By default this exception results in a response with the HTTP status code "403 Forbidden".
 
+## NotFound
+
+**Signature:** `NotFound(detail=None)`
+
+Raised when a resource does not exists at the given URL. This exception is equivalent to the standard `Http404` Django exception.
+
+By default this exception results in a response with the HTTP status code "404 Not Found".
+
 ## MethodNotAllowed
 
 **Signature:** `MethodNotAllowed(method, detail=None)`
@@ -135,6 +155,14 @@ By default this exception results in a response with the HTTP status code "403 F
 Raised when an incoming request occurs that does not map to a handler method on the view.
 
 By default this exception results in a response with the HTTP status code "405 Method Not Allowed".
+
+## NotAcceptable
+
+**Signature:** `NotAcceptable(detail=None)`
+
+Raised when an incoming request occurs with an `Accept` header that cannot be satisfied by any of the available renderers.
+
+By default this exception results in a response with the HTTP status code "406 Not Acceptable".
 
 ## UnsupportedMediaType
 

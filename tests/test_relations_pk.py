@@ -1,10 +1,13 @@
 from __future__ import unicode_literals
+
 from django.test import TestCase
 from django.utils import six
+
 from rest_framework import serializers
 from tests.models import (
-    ManyToManyTarget, ManyToManySource, ForeignKeyTarget, ForeignKeySource,
-    NullableForeignKeySource, OneToOneTarget, NullableOneToOneSource,
+    ForeignKeySource, ForeignKeyTarget, ManyToManySource, ManyToManyTarget,
+    NullableForeignKeySource, NullableOneToOneSource,
+    NullableUUIDForeignKeySource, OneToOneTarget, UUIDForeignKeyTarget
 )
 
 
@@ -38,6 +41,18 @@ class ForeignKeySourceSerializer(serializers.ModelSerializer):
 class NullableForeignKeySourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = NullableForeignKeySource
+        fields = ('id', 'name', 'target')
+
+
+# Nullable UUIDForeignKey
+class NullableUUIDForeignKeySourceSerializer(serializers.ModelSerializer):
+    target = serializers.PrimaryKeyRelatedField(
+        pk_field=serializers.UUIDField(),
+        queryset=UUIDForeignKeyTarget.objects.all(),
+        allow_null=True)
+
+    class Meta:
+        model = NullableUUIDForeignKeySource
         fields = ('id', 'name', 'target')
 
 
@@ -142,6 +157,16 @@ class PKManyToManyTests(TestCase):
             {'id': 4, 'name': 'source-4', 'targets': [1, 3]},
         ]
         self.assertEqual(serializer.data, expected)
+
+    def test_many_to_many_unsaved(self):
+        source = ManyToManySource(name='source-unsaved')
+
+        serializer = ManyToManySourceSerializer(source)
+
+        expected = {'id': None, 'name': 'source-unsaved', 'targets': []}
+        # no query if source hasn't been created yet
+        with self.assertNumQueries(0):
+            self.assertEqual(serializer.data, expected)
 
     def test_reverse_many_to_many_create(self):
         data = {'id': 4, 'name': 'target-4', 'sources': [1, 3]}
@@ -296,6 +321,16 @@ class PKForeignKeyTests(TestCase):
         self.assertFalse(serializer.is_valid())
         self.assertEqual(serializer.errors, {'target': ['This field may not be null.']})
 
+    def test_foreign_key_with_unsaved(self):
+        source = ForeignKeySource(name='source-unsaved')
+        expected = {'id': None, 'name': 'source-unsaved', 'target': None}
+
+        serializer = ForeignKeySourceSerializer(source)
+
+        # no query if source hasn't been created yet
+        with self.assertNumQueries(0):
+            self.assertEqual(serializer.data, expected)
+
     def test_foreign_key_with_empty(self):
         """
         Regression test for #1072
@@ -409,6 +444,17 @@ class PKNullableForeignKeyTests(TestCase):
             {'id': 3, 'name': 'source-3', 'target': None}
         ]
         self.assertEqual(serializer.data, expected)
+
+    def test_null_uuid_foreign_key_serializes_as_none(self):
+        source = NullableUUIDForeignKeySource(name='Source')
+        serializer = NullableUUIDForeignKeySourceSerializer(source)
+        data = serializer.data
+        self.assertEqual(data["target"], None)
+
+    def test_nullable_uuid_foreign_key_is_valid_when_none(self):
+        data = {"name": "Source", "target": None}
+        serializer = NullableUUIDForeignKeySourceSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
 
 
 class PKNullableOneToOneTests(TestCase):

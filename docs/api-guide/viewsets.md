@@ -27,7 +27,7 @@ Let's define a simple viewset that can be used to list or retrieve all the users
 
     class UserViewSet(viewsets.ViewSet):
         """
-        A simple ViewSet that for listing or retrieving users.
+        A simple ViewSet for listing or retrieving users.
         """
         def list(self, request):
             queryset = User.objects.all()
@@ -136,8 +136,13 @@ For example:
         @list_route()
         def recent_users(self, request):
             recent_users = User.objects.all().order('-last_login')
+
             page = self.paginate_queryset(recent_users)
-            serializer = self.get_pagination_serializer(page)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = self.get_serializer(recent_users, many=True)
             return Response(serializer.data)
 
 The decorators can additionally take extra arguments that will be set for the routed view only.  For example...
@@ -146,7 +151,7 @@ The decorators can additionally take extra arguments that will be set for the ro
         def set_password(self, request, pk=None):
            ...
 
-Theses decorators will route `GET` requests by default, but may also accept other HTTP methods, by using the `methods` argument.  For example:
+These decorators will route `GET` requests by default, but may also accept other HTTP methods, by using the `methods` argument.  For example:
 
         @detail_route(methods=['post', 'delete'])
         def unset_password(self, request, pk=None):
@@ -174,11 +179,11 @@ In order to use a `GenericViewSet` class you'll override the class and either mi
 
 The `ModelViewSet` class inherits from `GenericAPIView` and includes implementations for various actions, by mixing in the behavior of the various mixin classes.
 
-The actions provided by the `ModelViewSet` class are `.list()`, `.retrieve()`,  `.create()`, `.update()`, and `.destroy()`.
+The actions provided by the `ModelViewSet` class are `.list()`, `.retrieve()`,  `.create()`, `.update()`, `.partial_update()`, and `.destroy()`.
 
 #### Example
 
-Because `ModelViewSet` extends `GenericAPIView`, you'll normally need to provide at least the `queryset` and `serializer_class` attributes, or the `model` attribute shortcut.  For example:
+Because `ModelViewSet` extends `GenericAPIView`, you'll normally need to provide at least the `queryset` and `serializer_class` attributes.  For example:
 
     class AccountViewSet(viewsets.ModelViewSet):
         """
@@ -201,7 +206,7 @@ Note that you can use any of the standard attributes or method overrides provide
         def get_queryset(self):
             return self.request.user.accounts.all()
 
-Note however that upon removal of the `queryset` property from your `ViewSet`, any associated [router][routers] will be unable to derive the base_name of your Model automatically, and so you you will have to specify the `base_name` kwarg as part of your [router registration][routers].
+Note however that upon removal of the `queryset` property from your `ViewSet`, any associated [router][routers] will be unable to derive the base_name of your Model automatically, and so you will have to specify the `base_name` kwarg as part of your [router registration][routers].
 
 Also note that although this class provides the complete set of create/list/retrieve/update/destroy actions by default, you can restrict the available operations by using the standard permission classes.
 

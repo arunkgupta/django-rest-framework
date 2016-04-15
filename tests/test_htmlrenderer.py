@@ -1,15 +1,17 @@
 from __future__ import unicode_literals
+
+import django.template.loader
+from django.conf.urls import url
 from django.core.exceptions import PermissionDenied
-from django.conf.urls import patterns, url
 from django.http import Http404
+from django.template import Template, TemplateDoesNotExist
 from django.test import TestCase
-from django.template import TemplateDoesNotExist, Template
 from django.utils import six
+
 from rest_framework import status
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
-import django.template.loader
 
 
 @api_view(('GET',))
@@ -34,12 +36,11 @@ def not_found(request):
     raise Http404()
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', example),
     url(r'^permission_denied$', permission_denied),
     url(r'^not_found$', not_found),
-)
+]
 
 
 class TemplateHTMLRendererTests(TestCase):
@@ -56,7 +57,13 @@ class TemplateHTMLRendererTests(TestCase):
                 return Template("example: {{ object }}")
             raise TemplateDoesNotExist(template_name)
 
+        def select_template(template_name_list, dirs=None, using=None):
+            if template_name_list == ['example.html']:
+                return Template("example: {{ object }}")
+            raise TemplateDoesNotExist(template_name_list[0])
+
         django.template.loader.get_template = get_template
+        django.template.loader.select_template = select_template
 
     def tearDown(self):
         """

@@ -1,21 +1,17 @@
 from __future__ import unicode_literals
-from django.conf.urls import patterns, url, include
+
+from django.conf.urls import include, url
 from django.test import TestCase
 from django.utils import six
-from tests.models import BasicModel
+
+from rest_framework import generics, routers, serializers, status, viewsets
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import (
+    BaseRenderer, BrowsableAPIRenderer, JSONRenderer
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import generics
-from rest_framework import routers
-from rest_framework import serializers
-from rest_framework import status
-from rest_framework.renderers import (
-    BaseRenderer,
-    JSONRenderer,
-    BrowsableAPIRenderer
-)
-from rest_framework import viewsets
-from rest_framework.settings import api_settings
+from tests.models import BasicModel
 
 
 # Serializer used to test BasicModel
@@ -38,8 +34,13 @@ class MockTextMediaRenderer(BaseRenderer):
 DUMMYSTATUS = status.HTTP_200_OK
 DUMMYCONTENT = 'dummycontent'
 
-RENDERER_A_SERIALIZER = lambda x: ('Renderer A: %s' % x).encode('ascii')
-RENDERER_B_SERIALIZER = lambda x: ('Renderer B: %s' % x).encode('ascii')
+
+def RENDERER_A_SERIALIZER(x):
+    return ('Renderer A: %s' % x).encode('ascii')
+
+
+def RENDERER_B_SERIALIZER(x):
+    return ('Renderer B: %s' % x).encode('ascii')
 
 
 class RendererA(BaseRenderer):
@@ -78,6 +79,14 @@ class MockViewSettingContentType(APIView):
         return Response(DUMMYCONTENT, status=DUMMYSTATUS, content_type='setbyview')
 
 
+class JSONView(APIView):
+    parser_classes = (JSONParser,)
+
+    def post(self, request, **kwargs):
+        assert request.data
+        return Response(DUMMYCONTENT)
+
+
 class HTMLView(APIView):
     renderer_classes = (BrowsableAPIRenderer, )
 
@@ -108,17 +117,17 @@ new_model_viewset_router = routers.DefaultRouter()
 new_model_viewset_router.register(r'', HTMLNewModelViewSet)
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^setbyview$', MockViewSettingContentType.as_view(renderer_classes=[RendererA, RendererB, RendererC])),
     url(r'^.*\.(?P<format>.+)$', MockView.as_view(renderer_classes=[RendererA, RendererB, RendererC])),
     url(r'^$', MockView.as_view(renderer_classes=[RendererA, RendererB, RendererC])),
     url(r'^html$', HTMLView.as_view()),
+    url(r'^json$', JSONView.as_view()),
     url(r'^html1$', HTMLView1.as_view()),
     url(r'^html_new_model$', HTMLNewModelView.as_view()),
     url(r'^html_new_model_viewset', include(new_model_viewset_router.urls)),
     url(r'^restframework', include('rest_framework.urls', namespace='rest_framework'))
-)
+]
 
 
 # TODO: Clean tests bellow - remove duplicates with above, better unit testing, ...
@@ -166,17 +175,6 @@ class RendererIntegrationTests(TestCase):
         self.assertEqual(resp.content, RENDERER_B_SERIALIZER(DUMMYCONTENT))
         self.assertEqual(resp.status_code, DUMMYSTATUS)
 
-    def test_specified_renderer_serializes_content_on_accept_query(self):
-        """The '_accept' query string should behave in the same way as the Accept header."""
-        param = '?%s=%s' % (
-            api_settings.URL_ACCEPT_OVERRIDE,
-            RendererB.media_type
-        )
-        resp = self.client.get('/' + param)
-        self.assertEqual(resp['Content-Type'], RendererB.media_type + '; charset=utf-8')
-        self.assertEqual(resp.content, RENDERER_B_SERIALIZER(DUMMYCONTENT))
-        self.assertEqual(resp.status_code, DUMMYSTATUS)
-
     def test_specified_renderer_serializes_content_on_format_query(self):
         """If a 'format' query is specified, the renderer with the matching
         format attribute should serialize the response."""
@@ -201,6 +199,25 @@ class RendererIntegrationTests(TestCase):
         self.assertEqual(resp['Content-Type'], RendererB.media_type + '; charset=utf-8')
         self.assertEqual(resp.content, RENDERER_B_SERIALIZER(DUMMYCONTENT))
         self.assertEqual(resp.status_code, DUMMYSTATUS)
+
+
+class UnsupportedMediaTypeTests(TestCase):
+    urls = 'tests.test_response'
+
+    def test_should_allow_posting_json(self):
+        response = self.client.post('/json', data='{"test": 123}', content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_should_not_allow_posting_xml(self):
+        response = self.client.post('/json', data='<test>123</test>', content_type='application/xml')
+
+        self.assertEqual(response.status_code, 415)
+
+    def test_should_not_allow_posting_a_form(self):
+        response = self.client.post('/json', data={'test': 123})
+
+        self.assertEqual(response.status_code, 415)
 
 
 class Issue122Tests(TestCase):
@@ -269,16 +286,6 @@ class Issue807Tests(TestCase):
         headers = {"HTTP_ACCEPT": RendererC.media_type}
         resp = self.client.get('/setbyview', **headers)
         self.assertEqual('setbyview', resp['Content-Type'])
-
-    def test_viewset_label_help_text(self):
-        param = '?%s=%s' % (
-            api_settings.URL_ACCEPT_OVERRIDE,
-            'text/html'
-        )
-        resp = self.client.get('/html_new_model_viewset/' + param)
-        self.assertEqual(resp['Content-Type'], 'text/html; charset=utf-8')
-        # self.assertContains(resp, 'Text comes here')
-        # self.assertContains(resp, 'Text description.')
 
     def test_form_has_label_and_help_text(self):
         resp = self.client.get('/html_new_model')

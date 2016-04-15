@@ -38,7 +38,267 @@ You can determine your currently installed version using `pip freeze`:
 
 ---
 
+## 3.3.x series
+
+### 3.4
+
+**Unreleased**
+
+* Dropped support for EOL Django 1.7 ([#3933][gh3933])
+* Fixed null foreign keys targeting UUIDField primary keys. ([#3936][gh3936])
+
+### 3.3.2
+
+**Date**: [14th December 2015][3.3.2-milestone].
+
+* `ListField` enforces input is a list. ([#3513][gh3513])
+* Fix regression hiding raw data form. ([#3600][gh3600], [#3578][gh3578])
+* Fix Python 3.5 compatibility. ([#3534][gh3534], [#3626][gh3626])
+* Allow setting a custom Django Paginator in `pagination.PageNumberPagination`. ([#3631][gh3631], [#3684][gh3684])
+* Fix relational fields without `to_fields` attribute. ([#3635][gh3635], [#3634][gh3634])
+* Fix `template.render` deprecation warnings for Django 1.9. ([#3654][gh3654])
+* Sort response headers in browsable API renderer. ([#3655][gh3655])
+* Use related_objects api for Django 1.9+. ([#3656][gh3656], [#3252][gh3252])
+* Add confirm modal when deleting. ([#3228][gh3228], [#3662][gh3662])
+* Reveal previously hidden AttributeErrors and TypeErrors while calling has_[object_]permissions. ([#3668][gh3668])
+* Make DRF compatible with multi template engine in Django 1.8. ([#3672][gh3672])
+* Update `NestedBoundField` to also handle empty string when rendering its form. ([#3677][gh3677])
+* Fix UUID validation to properly catch invalid input types. ([#3687][gh3687], [#3679][gh3679])
+* Fix caching issues. ([#3628][gh3628], [#3701][gh3701])
+* Fix Admin and API browser for views without a filter_class. ([#3705][gh3705], [#3596][gh3596], [#3597][gh3597])
+* Add app_name to rest_framework.urls. ([#3714][gh3714])
+* Improve authtoken's views to support url versioning. ([#3718][gh3718], [#3723][gh3723])
+
+### 3.3.1
+
+**Date**: [4th November 2015][3.3.1-milestone].
+
+* Resolve parsing bug when accessing `request.POST` ([#3592][gh3592])
+* Correctly deal with `to_field` referring to primary key. ([#3593][gh3593])
+* Allow filter HTML to render when no `filter_class` is defined. ([#3560][gh3560])
+* Fix admin rendering issues. ([#3564][gh3564], [#3556][gh3556])
+* Fix issue with DecimalValidator. ([#3568][gh3568])
+
+### 3.3.0
+
+**Date**: [28th October 2015][3.3.0-milestone].
+
+* HTML controls for filters. ([#3315][gh3315])
+* Forms API. ([#3475][gh3475])
+* AJAX browsable API. ([#3410][gh3410])
+* Added JSONField. ([#3454][gh3454])
+* Correctly map `to_field` when creating `ModelSerializer` relational fields. ([#3526][gh3526])
+* Include keyword arguments when mapping `FilePathField` to a serializer field. ([#3536][gh3536])
+* Map appropriate model `error_messages` on `ModelSerializer` uniqueness constraints. ([#3435][gh3435])
+* Include `max_length` constraint for `ModelSerializer` fields mapped from TextField. ([#3509][gh3509])
+* Added support for Django 1.9. ([#3450][gh3450], [#3525][gh3525])
+* Removed support for Django 1.5 & 1.6. ([#3421][gh3421], [#3429][gh3429])
+* Removed 'south' migrations. ([#3495][gh3495])
+
+## 3.2.x series
+
+### 3.2.5
+
+**Date**: [27th October 2015][3.2.5-milestone].
+
+* Escape `username` in optional logout tag. ([#3550][gh3550])
+
+### 3.2.4
+
+**Date**: [21th September 2015][3.2.4-milestone].
+
+* Don't error on missing `ViewSet.search_fields` attribute. ([#3324][gh3324], [#3323][gh3323])
+* Fix `allow_empty` not working on serializers with `many=True`. ([#3361][gh3361], [#3364][gh3364])
+* Let `DurationField` accepts integers. ([#3359][gh3359])
+* Multi-level dictionaries not supported in multipart requests. ([#3314][gh3314])
+* Fix `ListField` truncation on HTTP PATCH ([#3415][gh3415], [#2761][gh2761])
+
+### 3.2.3
+
+**Date**: [24th August 2015][3.2.3-milestone].
+
+* Added `html_cutoff` and `html_cutoff_text` for limiting select dropdowns. ([#3313][gh3313])
+* Added regex style to `SearchFilter`. ([#3316][gh3316])
+* Resolve issues with setting blank HTML fields. ([#3318][gh3318]) ([#3321][gh3321])
+* Correctly display existing 'select multiple' values in browsable API forms. ([#3290][gh3290])
+* Resolve duplicated validation message for `IPAddressField`. ([#3249[gh3249]) ([#3250][gh3250])
+* Fix to ensure admin renderer continues to work when pagination is disabled. ([#3275][gh3275])
+* Resolve error with `LimitOffsetPagination` when count=0, offset=0. ([#3303][gh3303])
+
+### 3.2.2
+
+**Date**: [13th August 2015][3.2.2-milestone].
+
+* Add `display_value()` method for use when displaying relational field select inputs. ([#3254][gh3254])
+* Fix issue with `BooleanField` checkboxes incorrectly displaying as checked. ([#3258][gh3258])
+* Ensure empty checkboxes properly set `BooleanField` to `False` in all cases. ([#2776][gh2776])
+* Allow `WSGIRequest.FILES` property without raising incorrect deprecated error. ([#3261][gh3261])
+* Resolve issue with rendering nested serializers in forms. ([#3260][gh3260])
+* Raise an error if user accidentally pass a serializer instance to a response, rather than data. ([#3241][gh3241])
+
+### 3.2.1
+
+**Date**: [7th August 2015][3.2.1-milestone].
+
+* Fix for relational select widgets rendering without any choices. ([#3237][gh3237])
+* Fix for `1`, `0` rendering as `true`, `false` in the admin interface. [#3227][gh3227])
+* Fix for ListFields with single value in HTML form input. ([#3238][gh3238])
+* Allow `request.FILES` for compat with Django's `HTTPRequest` class. ([#3239][gh3239])
+
+### 3.2.0
+
+**Date**: [6th August 2015][3.2.0-milestone].
+
+* Add `AdminRenderer`. ([#2926][gh2926])
+* Add `FilePathField`. ([#1854][gh1854])
+* Add `allow_empty` to `ListField`. ([#2250][gh2250])
+* Support django-guardian 1.3. ([#3165][gh3165])
+* Support grouped choices. ([#3225][gh3225])
+* Support error forms in browsable API. ([#3024][gh3024])
+* Allow permission classes to customize the error message. ([#2539][gh2539])
+* Support `source=<method>` on hyperlinked fields. ([#2690][gh2690])
+* `ListField(allow_null=True)` now allows null as the list value, not null items in the list. ([#2766][gh2766])
+* `ManyToMany()` maps to `allow_empty=False`, `ManyToMany(blank=True)` maps to `allow_empty=True`. ([#2804][gh2804])
+* Support custom serialization styles for primary key fields. ([#2789][gh2789])
+* `OPTIONS` requests support nested representations. ([#2915][gh2915])
+* Set `view.action == "metadata"` for viewsets with `OPTIONS` requests. ([#3115][gh3115])
+* Support `allow_blank` on `UUIDField`. ([#3130][gh#3130])
+* Do not display view docstrings with 401 or 403 response codes. ([#3216][gh3216])
+* Resolve Django 1.8 deprecation warnings. ([#2886][gh2886])
+* Fix for `DecimalField` validation. ([#3139][gh3139])
+* Fix behavior of `allow_blank=False` when used with `trim_whitespace=True`. ([#2712][gh2712])
+* Fix issue with some field combinations incorrectly mapping to an invalid `allow_blank` argument. ([#3011][gh3011])
+* Fix for output representations with prefetches and modified querysets. ([#2704][gh2704], [#2727][gh2727])
+* Fix assertion error when CursorPagination is provided with certains invalid query parameters. (#2920)[gh2920].
+* Fix `UnicodeDecodeError` when invalid characters included in header with `TokenAuthentication`. ([#2928][gh2928])
+* Fix transaction rollbacks with `@non_atomic_requests` decorator. ([#3016][gh3016])
+* Fix duplicate results issue with Oracle databases using `SearchFilter`. ([#2935][gh2935])
+* Fix checkbox alignment and rendering in browsable API forms. ([#2783][gh2783])
+* Fix for unsaved file objects which should use `"url": null` in the representation. ([#2759][gh2759])
+* Fix field value rendering in browsable API. ([#2416][gh2416])
+* Fix `HStoreField` to include `allow_blank=True` in `DictField` mapping. ([#2659][gh2659])
+* Numerous other cleanups, improvements to error messaging, private API & minor fixes.
+
+---
+
+## 3.1.x series
+
+### 3.1.3
+
+**Date**: [4th June 2015][3.1.3-milestone].
+
+* Add `DurationField`. ([#2481][gh2481], [#2989][gh2989])
+* Add `format` argument to `UUIDField`. ([#2788][gh2788], [#3000][gh3000])
+* `MultipleChoiceField` empties incorrectly on a partial update using multipart/form-data ([#2993][gh2993], [#2894][gh2894])
+* Fix a bug in options related to read-only `RelatedField`. ([#2981][gh2981], [#2811][gh2811])
+* Fix nested serializers with `unique_together` relations. ([#2975][gh2975])
+* Allow unexpected values for `ChoiceField`/`MultipleChoiceField` representations. ([#2839][gh2839], [#2940][gh2940])
+* Rollback the transaction on error if `ATOMIC_REQUESTS` is set. ([#2887][gh2887], [#2034][gh2034])
+* Set the action on a view when override_method regardless of its None-ness. ([#2933][gh2933])
+* `DecimalField` accepts `2E+2` as 200 and validates decimal place correctly. ([#2948][gh2948], [#2947][gh2947])
+* Support basic authentication with custom `UserModel` that change `username`. ([#2952][gh2952])
+* `IPAddressField` improvements. ([#2747][gh2747], [#2618][gh2618], [#3008][gh3008])
+* Improve `DecimalField` for easier subclassing. ([#2695][gh2695])
+
+
+### 3.1.2
+
+**Date**: [13rd May 2015][3.1.2-milestone].
+
+* `DateField.to_representation` can handle str and empty values. ([#2656][gh2656], [#2687][gh2687], [#2869][gh2869])
+* Use default reason phrases from HTTP standard. ([#2764][gh2764], [#2763][gh2763])
+* Raise error when `ModelSerializer` used with abstract model. ([#2757][gh2757], [#2630][gh2630])
+* Handle reversal of non-API view_name in `HyperLinkedRelatedField` ([#2724][gh2724], [#2711][gh2711])
+* Dont require pk strictly for related fields. ([#2745][gh2745], [#2754][gh2754])
+* Metadata detects null boolean field type. ([#2762][gh2762])
+* Proper handling of depth in nested serializers. ([#2798][gh2798])
+* Display viewset without paginator. ([#2807][gh2807])
+* Don't check for deprecated `.model` attribute in permissions ([#2818][gh2818])
+* Restrict integer field to integers and strings. ([#2835][gh2835], [#2836][gh2836])
+* Improve `IntegerField` to use compiled decimal regex. ([#2853][gh2853])
+* Prevent empty `queryset` to raise AssertionError. ([#2862][gh2862])
+* `DjangoModelPermissions` rely on `get_queryset`. ([#2863][gh2863])
+* Check `AcceptHeaderVersioning` with content negotiation in place. ([#2868][gh2868])
+* Allow `DjangoObjectPermissions` to use views that define `get_queryset`. ([#2905][gh2905])
+
+
+### 3.1.1
+
+**Date**: [23rd March 2015][3.1.1-milestone].
+
+* **Security fix**: Escape tab switching cookie name in browsable API.
+* Display input forms in browsable API if `serializer_class` is used, even when `get_serializer` method does not exist on the view. ([#2743][gh2743])
+* Use a password input for the AuthTokenSerializer. ([#2741][gh2741])
+* Fix missing anchor closing tag after next button. ([#2691][gh2691])
+* Fix `lookup_url_kwarg` handling in viewsets. ([#2685][gh2685], [#2591][gh2591])
+* Fix problem with importing `rest_framework.views` in `apps.py` ([#2678][gh2678])
+* LimitOffsetPagination raises `TypeError` if PAGE_SIZE not set ([#2667][gh2667], [#2700][gh2700])
+* German translation for `min_value` field error message references `max_value`. ([#2645][gh2645])
+* Remove `MergeDict`. ([#2640][gh2640])
+* Support serializing unsaved models with related fields. ([#2637][gh2637], [#2641][gh2641])
+* Allow blank/null on radio.html choices. ([#2631][gh2631])
+
+
+### 3.1.0
+
+**Date**: [5th March 2015][3.1.0-milestone].
+
+For full details see the [3.1 release announcement](3.1-announcement.md).
+
+---
+
 ## 3.0.x series
+
+### 3.0.5
+
+**Date**: [10th February 2015][3.0.5-milestone].
+
+* Fix a bug where `_closable_objects` breaks pickling. ([#1850][gh1850], [#2492][gh2492])
+* Allow non-standard `User` models with `Throttling`. ([#2524][gh2524])
+* Support custom `User.db_table` in TokenAuthentication migration. ([#2479][gh2479])
+* Fix misleading `AttributeError` tracebacks on `Request` objects. ([#2530][gh2530], [#2108][gh2108])
+* `ManyRelatedField.get_value` clearing field on partial update. ([#2475][gh2475])
+* Removed '.model' shortcut from code. ([#2486][gh2486])
+* Fix `detail_route` and `list_route` mutable argument. ([#2518][gh2518])
+* Prefetching the user object when getting the token in `TokenAuthentication`. ([#2519][gh2519])
+
+### 3.0.4
+
+**Date**: [28th January 2015][3.0.4-milestone].
+
+* Django 1.8a1 support. ([#2425][gh2425], [#2446][gh2446], [#2441][gh2441])
+* Add `DictField` and support Django 1.8 `HStoreField`. ([#2451][gh2451], [#2106][gh2106])
+* Add `UUIDField` and support Django 1.8 `UUIDField`. ([#2448][gh2448], [#2433][gh2433], [#2432][gh2432])
+* `BaseRenderer.render` now raises `NotImplementedError`. ([#2434][gh2434])
+* Fix timedelta JSON serialization on Python 2.6. ([#2430][gh2430])
+* `ResultDict` and `ResultList` now appear as standard dict/list. ([#2421][gh2421])
+* Fix visible `HiddenField` in the HTML form of the web browsable API page. ([#2410][gh2410])
+* Use `OrderedDict` for `RelatedField.choices`. ([#2408][gh2408])
+* Fix ident format when using `HTTP_X_FORWARDED_FOR`. ([#2401][gh2401])
+* Fix invalid key with memcached while using throttling. ([#2400][gh2400])
+* Fix `FileUploadParser` with version 3.x. ([#2399][gh2399])
+* Fix the serializer inheritance. ([#2388][gh2388])
+* Fix caching issues with `ReturnDict`. ([#2360][gh2360])
+
+### 3.0.3
+
+**Date**: [8th January 2015][3.0.3-milestone].
+
+* Fix `MinValueValidator` on `models.DateField`. ([#2369][gh2369])
+* Fix serializer missing context when pagination is used. ([#2355][gh2355])
+* Namespaced router URLs are now supported by the `DefaultRouter`. ([#2351][gh2351])
+* `required=False` allows omission of value for output. ([#2342][gh2342])
+* Use textarea input for `models.TextField`. ([#2340][gh2340])
+* Use custom `ListSerializer` for pagination if required. ([#2331][gh2331], [#2327][gh2327])
+* Better behavior with null and '' for blank HTML fields. ([#2330][gh2330])
+* Ensure fields in `exclude` are model fields. ([#2319][gh2319])
+* Fix `IntegerField` and `max_length` argument incompatibility. ([#2317][gh2317])
+* Fix the YAML encoder for 3.0 serializers. ([#2315][gh2315], [#2283][gh2283])
+* Fix the behavior of empty HTML fields. ([#2311][gh2311], [#1101][gh1101])
+* Fix Metaclass attribute depth ignoring fields attribute. ([#2287][gh2287])
+* Fix `format_suffix_patterns` to work with Django's `i18n_patterns`. ([#2278][gh2278])
+* Ability to customize router URLs for custom actions, using `url_path`. ([#2010][gh2010])
+* Don't install Django REST Framework as egg. ([#2386][gh2386])
 
 ### 3.0.2
 
@@ -85,601 +345,38 @@ For full details see the [3.0 release announcement](3.0-announcement.md).
 
 ---
 
-## 2.4.x series
-
-### 2.4.4
-
-**Date**: [3rd November 2014](https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%222.4.4+Release%22+).
-
-* **Security fix**: Escape URLs when replacing `format=` query parameter, as used in dropdown on `GET` button in browsable API to allow explicit selection of JSON vs HTML output.
-* Maintain ordering of URLs in API root view for `DefaultRouter`.
-* Fix `follow=True` in `APIRequestFactory`
-* Resolve issue with invalid `read_only=True`, `required=True` fields being automatically generated by `ModelSerializer` in some cases.
-* Resolve issue with `OPTIONS` requests returning incorrect information for views using `get_serializer_class` to dynamically determine serializer based on request method. 
-
-### 2.4.3
-
-**Date**: [19th September 2014](https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%222.4.3+Release%22+).
-
-* Support translatable view docstrings being displayed in the browsable API.
-* Support [encoded `filename*`][rfc-6266] in raw file uploads with `FileUploadParser`.
-* Allow routers to support viewsets that don't include any list routes or that don't include any detail routes.
-* Don't render an empty login control in browsable API if `login` view is not included.
-* CSRF exemption performed in `.as_view()` to prevent accidental omission if overriding `.dispatch()`.
-* Login on browsable API now displays validation errors.
-* Bugfix: Fix migration in `authtoken` application.
-* Bugfix: Allow selection of integer keys in nested choices.
-* Bugfix: Return `None` instead of `'None'` in `CharField` with `allow_none=True`.
-* Bugfix: Ensure custom model fields map to equivelent serializer fields more reliably.
-* Bugfix: `DjangoFilterBackend` no longer quietly changes queryset ordering.
-
-### 2.4.2
-
-**Date**: [3rd September 2014](https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%222.4.2+Release%22+).
-
-* Bugfix: Fix broken pagination for 2.4.x series.
-
-### 2.4.1
-
-**Date**: [1st September 2014](https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%222.4.1+Release%22+).
-
-* Bugfix: Fix broken login template for browsable API.
-
-### 2.4.0
-
-**Date**: [29th August 2014](https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%222.4.0+Release%22+).
-
-**Django version requirements**: The lowest supported version of Django is now 1.4.2.
-
-**South version requirements**: This note applies to any users using the optional `authtoken` application, which includes an associated database migration. You must now *either* upgrade your `south` package to version 1.0, *or* instead use the built-in migration support available with Django 1.7.
-
-* Added compatibility with Django 1.7's database migration support.
-* New test runner, using `py.test`.
-* Deprecated `.model` view attribute in favor of explicit `.queryset` and `.serializer_class` attributes. The `DEFAULT_MODEL_SERIALIZER_CLASS` setting is also deprecated.
-* `@detail_route` and `@list_route` decorators replace `@action` and `@link`.
-* Support customizable view name and description functions, using the `VIEW_NAME_FUNCTION` and `VIEW_DESCRIPTION_FUNCTION` settings.
-* Added `NUM_PROXIES` setting for smarter client IP identification.
-* Added `MAX_PAGINATE_BY` setting and `max_paginate_by` generic view attribute.
-* Added `Retry-After` header to throttled responses, as per [RFC 6585](http://tools.ietf.org/html/rfc6585). This should now be used in preference to the custom `X-Trottle-Wait-Seconds` header which will be fully deprecated in 3.0.
-* Added `cache` attribute to throttles to allow overriding of default cache.
-* Added `lookup_value_regex` attribute to routers, to allow the URL argument matching to be constrainted by the user.
-* Added `allow_none` option to `CharField`.
-* Support Django's standard `status_code` class attribute on responses.
-* More intuitive behavior on the test client, as `client.logout()` now also removes any credentials that have been set.
-* Bugfix: `?page_size=0` query parameter now falls back to default page size for view, instead of always turning pagination off.
-* Bugfix: Always uppercase `X-Http-Method-Override` methods.
-* Bugfix: Copy `filter_backends` list before returning it, in order to prevent view code from mutating the class attribute itself.
-* Bugfix: Set the `.action` attribute on viewsets when introspected by `OPTIONS` for testing permissions on the view.
-* Bugfix: Ensure `ValueError` raised during deserialization results in a error list rather than a single error. This is now consistent with other validation errors.
-* Bugfix: Fix `cache_format` typo on throttle classes, was `"throtte_%(scope)s_%(ident)s"`. Note that this will invalidate existing throttle caches.
-
----
-
-## 2.3.x series
-
-### 2.3.14
-
-**Date**: 12th June 2014
-
-* **Security fix**: Escape request path when it is include as part of the login and logout links in the browsable API.
-* `help_text` and `verbose_name` automatically set for related fields on `ModelSerializer`.
-* Fix nested serializers linked through a backward foreign key relation.
-* Fix bad links for the `BrowsableAPIRenderer` with `YAMLRenderer`.
-* Add `UnicodeYAMLRenderer` that extends `YAMLRenderer` with unicode.
-* Fix `parse_header` argument convertion.
-* Fix mediatype detection under Python 3.
-* Web browsable API now offers blank option on dropdown when the field is not required.
-* `APIException` representation improved for logging purposes.
-* Allow source="*" within nested serializers.
-* Better support for custom oauth2 provider backends.
-* Fix field validation if it's optional and has no value.
-* Add `SEARCH_PARAM` and `ORDERING_PARAM`.
-* Fix `APIRequestFactory` to support arguments within the url string for GET.
-* Allow three transport modes for access tokens when accessing a protected resource.
-* Fix `QueryDict` encoding on request objects.
-* Ensure throttle keys do not contain spaces, as those are invalid if using `memcached`.
-* Support `blank_display_value` on `ChoiceField`.
-
-### 2.3.13
-
-**Date**: 6th March 2014
-
-* Django 1.7 Support.
-* Fix `default` argument when used with serializer relation fields.
-* Display the media type of the content that is being displayed in the browsable API, rather than 'text/html'.
-* Bugfix for `urlize` template failure when URL regex is matched, but value does not `urlparse`.
-* Use `urandom` for token generation.
-* Only use `Vary: Accept` when more than one renderer exists.
-
-### 2.3.12
-
-**Date**: 15th January 2014
-
-* **Security fix**: `OrderingField` now only allows ordering on readable serializer fields, or on fields explicitly specified using `ordering_fields`. This prevents users being able to order by fields that are not visible in the API, and exploiting the ordering of sensitive data such as password hashes.
-* Bugfix: `write_only = True` fields now display in the browsable API.
-
-### 2.3.11
-
-**Date**: 14th January 2014
-
-* Added `write_only` serializer field argument.
-* Added `write_only_fields` option to `ModelSerializer` classes.
-* JSON renderer now deals with objects that implement a dict-like interface.
-* Fix compatiblity with newer versions of `django-oauth-plus`.
-* Bugfix: Refine behavior that calls model manager `all()` across nested serializer relationships, preventing erronous behavior with some non-ORM objects, and preventing unnecessary queryset re-evaluations.
-* Bugfix: Allow defaults on BooleanFields to be properly honored when values are not supplied.
-* Bugfix: Prevent double-escaping of non-latin1 URL query params when appending `format=json` params.
-
-### 2.3.10
-
-**Date**: 6th December 2013
-
-* Add in choices information for ChoiceFields in response to `OPTIONS` requests.
-* Added `pre_delete()` and `post_delete()` method hooks.
-* Added status code category helper functions.
-* Bugfix: Partial updates which erronously set a related field to `None` now correctly fail validation instead of raising an exception.
-* Bugfix: Responses without any content no longer include an HTTP `'Content-Type'` header.
-* Bugfix: Correctly handle validation errors in PUT-as-create case, responding with 400.
-
-### 2.3.9
-
-**Date**: 15th November 2013
-
-* Fix Django 1.6 exception API compatibility issue caused by `ValidationError`.
-* Include errors in HTML forms in browsable API.
-* Added JSON renderer support for numpy scalars.
-* Added `transform_<fieldname>` hooks on serializers for easily modifying field output.
-* Added `get_context` hook in `BrowsableAPIRenderer`.
-* Allow serializers to be passed `files` but no `data`.
-* `HTMLFormRenderer` now renders serializers directly to HTML without needing to create an intermediate form object.
-* Added `get_filter_backends` hook.
-* Added queryset aggregates to allowed fields in `OrderingFilter`.
-* Bugfix: Fix decimal suppoprt with `YAMLRenderer`.
-* Bugfix: Fix submission of unicode in browsable API through raw data form.
-
-### 2.3.8
-
-**Date**: 11th September 2013
-
-* Added `DjangoObjectPermissions`, and `DjangoObjectPermissionsFilter`.
-* Support customizable exception handling, using the `EXCEPTION_HANDLER` setting.
-* Support customizable view name and description functions, using the `VIEW_NAME_FUNCTION` and `VIEW_DESCRIPTION_FUNCTION` settings.
-* Added `MAX_PAGINATE_BY` setting and `max_paginate_by` generic view attribute.
-* Added `cache` attribute to throttles to allow overriding of default cache.
-* 'Raw data' tab in browsable API now contains pre-populated data.
-* 'Raw data' and 'HTML form' tab preference in browsable API now saved between page views.
-* Bugfix: `required=True` argument fixed for boolean serializer fields.
-* Bugfix: `client.force_authenticate(None)` should also clear session info if it exists.
-* Bugfix: Client sending empty string instead of file now clears `FileField`.
-* Bugfix: Empty values on ChoiceFields with `required=False` now consistently return `None`.
-* Bugfix: Clients setting `page_size=0` now simply returns the default page size, instead of disabling pagination. [*]
-
----
-
-[*] Note that the change in `page_size=0` behaviour fixes what is considered to be a bug in how clients can effect the pagination size.  However if you were relying on this behavior you will need to add the following mixin to your list views in order to preserve the existing behavior.
-
-    class DisablePaginationMixin(object):
-        def get_paginate_by(self, queryset=None):
-            if self.request.QUERY_PARAMS[self.paginate_by_param] == '0':
-                return None
-            return super(DisablePaginationMixin, self).get_paginate_by(queryset)
-
----
-
-### 2.3.7
-
-**Date**: 16th August 2013
-
-* Added `APITestClient`, `APIRequestFactory` and `APITestCase` etc...
-* Refactor `SessionAuthentication` to allow esier override for CSRF exemption.
-* Remove 'Hold down "Control" message from help_text' widget messaging when not appropriate.
-* Added admin configuration for auth tokens.
-* Bugfix: `AnonRateThrottle` fixed to not throttle authenticated users.
-* Bugfix: Don't set `X-Throttle-Wait-Seconds` when throttle does not have `wait` value.
-* Bugfix: Fixed `PATCH` button title in browsable API.
-* Bugfix: Fix issue with OAuth2 provider naive datetimes.
-
-### 2.3.6
-
-**Date**: 27th June 2013
-
-* Added `trailing_slash` option to routers.
-* Include support for `HttpStreamingResponse`.
-* Support wider range of default serializer validation when used with custom model fields.
-* UTF-8 Support for browsable API descriptions.
-* OAuth2 provider uses timezone aware datetimes when supported.
-* Bugfix: Return error correctly when OAuth non-existent consumer occurs.
-* Bugfix: Allow `FileUploadParser` to correctly filename if provided as URL kwarg.
-* Bugfix: Fix `ScopedRateThrottle`.
-
-### 2.3.5
-
-**Date**: 3rd June 2013
-
-* Added `get_url` hook to `HyperlinkedIdentityField`.
-* Serializer field `default` argument may be a callable.
-* `@action` decorator now accepts a `methods` argument.
-* Bugfix: `request.user` should be still be accessible in renderer context if authentication fails.
-* Bugfix: The `lookup_field` option on `HyperlinkedIdentityField` should apply by default to the url field on the serializer.
-* Bugfix: `HyperlinkedIdentityField` should continue to support `pk_url_kwarg`, `slug_url_kwarg`, `slug_field`, in a pending deprecation state.
-* Bugfix: Ensure we always return 404 instead of 500 if a lookup field cannot be converted to the correct lookup type.  (Eg non-numeric `AutoInteger` pk lookup)
-
-### 2.3.4
-
-**Date**: 24th May 2013
-
-* Serializer fields now support `label` and `help_text`.
-* Added `UnicodeJSONRenderer`.
-* `OPTIONS` requests now return metadata about fields for `POST` and `PUT` requests.
-* Bugfix: `charset` now properly included in `Content-Type` of responses.
-* Bugfix: Blank choice now added in browsable API on nullable relationships.
-* Bugfix: Many to many relationships with `through` tables are now read-only.
-* Bugfix: Serializer fields now respect model field args such as `max_length`.
-* Bugfix: SlugField now performs slug validation.
-* Bugfix: Lazy-translatable strings now properly serialized.
-* Bugfix: Browsable API now supports bootswatch styles properly.
-* Bugfix: HyperlinkedIdentityField now uses `lookup_field` kwarg.
-
-**Note**: Responses now correctly include an appropriate charset on the `Content-Type` header.  For example: `application/json; charset=utf-8`.  If you have tests that check the content type of responses, you may need to update these accordingly.
-
-### 2.3.3
-
-**Date**: 16th May 2013
-
-* Added SearchFilter
-* Added OrderingFilter
-* Added GenericViewSet
-* Bugfix: Multiple `@action` and `@link` methods now allowed on viewsets.
-* Bugfix: Fix API Root view issue with DjangoModelPermissions
-
-### 2.3.2
-
-**Date**: 8th May 2013
-
-* Bugfix: Fix `TIME_FORMAT`, `DATETIME_FORMAT` and `DATE_FORMAT` settings.
-* Bugfix: Fix `DjangoFilterBackend` issue, failing when used on view with queryset attribute.
-
-### 2.3.1
-
-**Date**: 7th May 2013
-
-* Bugfix: Fix breadcrumb rendering issue.
-
-### 2.3.0
-
-**Date**: 7th May 2013
-
-* ViewSets and Routers.
-* ModelSerializers support reverse relations in 'fields' option.
-* HyperLinkedModelSerializers support 'id' field in 'fields' option.
-* Cleaner generic views.
-* Support for multiple filter classes.
-* FileUploadParser support for raw file uploads.
-* DecimalField support.
-* Made Login template easier to restyle.
-* Bugfix: Fix issue with depth>1 on ModelSerializer.
-
-**Note**: See the [2.3 announcement][2.3-announcement] for full details.
-
----
-
-## 2.2.x series
-
-### 2.2.7
-
-**Date**: 17th April 2013
-
-* Loud failure when view does not return a `Response` or `HttpResponse`.
-* Bugfix: Fix for Django 1.3 compatibility.
-* Bugfix: Allow overridden `get_object()` to work correctly.
-
-### 2.2.6
-
-**Date**: 4th April 2013
-
-* OAuth2 authentication no longer requires unnecessary URL parameters in addition to the token.
-* URL hyperlinking in browsable API now handles more cases correctly.
-* Long HTTP headers in browsable API are broken in multiple lines when possible.
-* Bugfix: Fix regression with DjangoFilterBackend not worthing correctly with single object views.
-* Bugfix: OAuth should fail hard when invalid token used.
-* Bugfix: Fix serializer potentially returning `None` object for models that define `__bool__` or `__len__`.
-
-### 2.2.5
-
-**Date**: 26th March 2013
-
-* Serializer support for bulk create and bulk update operations.
-* Regression fix: Date and time fields return date/time objects by default.  Fixes regressions caused by 2.2.2.  See [#743][743] for more details.
-* Bugfix: Fix 500 error is OAuth not attempted with OAuthAuthentication class installed.
-* `Serializer.save()` now supports arbitrary keyword args which are passed through to the object `.save()` method.  Mixins use `force_insert` and `force_update` where appropriate, resulting in one less database query.
-
-### 2.2.4
-
-**Date**: 13th March 2013
-
-* OAuth 2 support.
-* OAuth 1.0a support.
-* Support X-HTTP-Method-Override header.
-* Filtering backends are now applied to the querysets for object lookups as well as lists.  (Eg you can use a filtering backend to control which objects should 404)
-* Deal with error data nicely when deserializing lists of objects.
-* Extra override hook to configure `DjangoModelPermissions` for unauthenticated users.
-* Bugfix: Fix regression which caused extra database query on paginated list views.
-* Bugfix: Fix pk relationship bug for some types of 1-to-1 relations.
-* Bugfix: Workaround for Django bug causing case where `Authtoken` could be registered for cascade delete from `User` even if not installed.
-
-### 2.2.3
-
-**Date**: 7th March 2013
-
-* Bugfix: Fix None values for for `DateField`, `DateTimeField` and `TimeField`.
-
-### 2.2.2
-
-**Date**: 6th March 2013
-
-* Support for custom input and output formats for `DateField`, `DateTimeField` and `TimeField`.
-* Cleanup: Request authentication is no longer lazily evaluated, instead authentication is always run, which results in more consistent, obvious behavior.  Eg. Supplying bad auth credentials will now always return an error response, even if no permissions are set on the view.
-* Bugfix for serializer data being uncacheable with pickle protocol 0.
-* Bugfixes for model field validation edge-cases.
-* Bugfix for authtoken migration while using a custom user model and south.
-
-### 2.2.1
-
-**Date**: 22nd Feb 2013
-
-* Security fix: Use `defusedxml` package to address XML parsing vulnerabilities.
-* Raw data tab added to browsable API.  (Eg. Allow for JSON input.)
-* Added TimeField.
-* Serializer fields can be mapped to any method that takes no args, or only takes kwargs which have defaults.
-* Unicode support for view names/descriptions in browsable API.
-* Bugfix: request.DATA should return an empty `QueryDict` with no data, not `None`.
-* Bugfix: Remove unneeded field validation, which caused extra queries.
-
-**Security note**: Following the [disclosure of security vulnerabilities][defusedxml-announce] in Python's XML parsing libraries, use of the `XMLParser` class now requires the `defusedxml` package to be installed.
-
-The security vulnerabilities only affect APIs which use the `XMLParser` class, by enabling it in any views, or by having it set in the `DEFAULT_PARSER_CLASSES` setting.  Note that the `XMLParser` class is not enabled by default, so this change should affect a minority of users.
-
-### 2.2.0
-
-**Date**: 13th Feb 2013
-
-* Python 3 support.
-* Added a `post_save()` hook to the generic views.
-* Allow serializers to handle dicts as well as objects.
-* Deprecate `ManyRelatedField()` syntax in favor of `RelatedField(many=True)`
-* Deprecate `null=True` on relations in favor of `required=False`.
-* Deprecate `blank=True` on CharFields, just use `required=False`.
-* Deprecate optional `obj` argument in permissions checks in favor of `has_object_permission`.
-* Deprecate implicit hyperlinked relations behavior.
-* Bugfix: Fix broken DjangoModelPermissions.
-* Bugfix: Allow serializer output to be cached.
-* Bugfix: Fix styling on browsable API login.
-* Bugfix: Fix issue with deserializing empty to-many relations.
-* Bugfix: Ensure model field validation is still applied for ModelSerializer subclasses with an custom `.restore_object()` method.
-
-**Note**: See the [2.2 announcement][2.2-announcement] for full details.
-
----
-
-## 2.1.x series
-
-### 2.1.17
-
-**Date**: 26th Jan 2013
-
-* Support proper 401 Unauthorized responses where appropriate, instead of always using 403 Forbidden.
-* Support json encoding of timedelta objects.
-* `format_suffix_patterns()` now supports `include` style URL patterns.
-* Bugfix: Fix issues with custom pagination serializers.
-* Bugfix: Nested serializers now accept `source='*'` argument.
-* Bugfix: Return proper validation errors when incorrect types supplied for relational fields.
-* Bugfix: Support nullable FKs with `SlugRelatedField`.
-* Bugfix: Don't call custom validation methods if the field has an error.
-
-**Note**: If the primary authentication class is `TokenAuthentication` or `BasicAuthentication`, a view will now correctly return 401 responses to unauthenticated access, with an appropriate `WWW-Authenticate` header, instead of 403 responses.
-
-### 2.1.16
-
-**Date**: 14th Jan 2013
-
-* Deprecate `django.utils.simplejson` in favor of Python 2.6's built-in json module.
-* Bugfix: `auto_now`, `auto_now_add` and other `editable=False` fields now default to read-only.
-* Bugfix: PK fields now only default to read-only if they are an AutoField or if `editable=False`.
-* Bugfix: Validation errors instead of exceptions when serializers receive incorrect types.
-* Bugfix: Validation errors instead of exceptions when related fields receive incorrect types.
-* Bugfix: Handle ObjectDoesNotExist exception when serializing null reverse one-to-one
-
-**Note**: Prior to 2.1.16, The Decimals would render in JSON using floating point if `simplejson` was installed, but otherwise render using string notation.  Now that use of `simplejson` has been deprecated, Decimals will consistently render using string notation.  See [ticket 582](ticket-582) for more details.
-
-### 2.1.15
-
-**Date**: 3rd Jan 2013
-
-* Added `PATCH` support.
-* Added `RetrieveUpdateAPIView`.
-* Remove unused internal `save_m2m` flag on `ModelSerializer.save()`.
-* Tweak behavior of hyperlinked fields with an explicit format suffix.
-* Relation changes are now persisted in `.save()` instead of in `.restore_object()`.
-* Bugfix: Fix issue with FileField raising exception instead of validation error when files=None.
-* Bugfix: Partial updates should not set default values if field is not included.
-
-### 2.1.14
-
-**Date**: 31st Dec 2012
-
-* Bugfix: ModelSerializers now include reverse FK fields on creation.
-* Bugfix: Model fields with `blank=True` are now `required=False` by default.
-* Bugfix: Nested serializers now support nullable relationships.
-
-**Note**: From 2.1.14 onwards, relational fields move out of the `fields.py` module and into the new `relations.py` module, in order to separate them from regular data type fields, such as `CharField` and `IntegerField`.
-
-This change will not affect user code, so long as it's following the recommended import style of `from rest_framework import serializers` and referring to fields using the style `serializers.PrimaryKeyRelatedField`.
-
-
-### 2.1.13
-
-**Date**: 28th Dec 2012
-
-* Support configurable `STATICFILES_STORAGE` storage.
-* Bugfix: Related fields now respect the required flag, and may be required=False.
-
-### 2.1.12
-
-**Date**: 21st Dec 2012
-
-* Bugfix: Fix bug that could occur using ChoiceField.
-* Bugfix: Fix exception in browsable API on DELETE.
-* Bugfix: Fix issue where pk was was being set to a string if set by URL kwarg.
-
-### 2.1.11
-
-**Date**: 17th Dec 2012
-
-* Bugfix: Fix issue with M2M fields in browsable API.
-
-### 2.1.10
-
-**Date**: 17th Dec 2012
-
-* Bugfix: Ensure read-only fields don't have model validation applied.
-* Bugfix: Fix hyperlinked fields in paginated results.
-
-### 2.1.9
-
-**Date**: 11th Dec 2012
-
-* Bugfix: Fix broken nested serialization.
-* Bugfix: Fix `Meta.fields` only working as tuple not as list.
-* Bugfix: Edge case if unnecessarily specifying `required=False` on read only field.
-
-### 2.1.8
-
-**Date**: 8th Dec 2012
-
-* Fix for creating nullable Foreign Keys with `''` as well as `None`.
-* Added `null=<bool>` related field option.
-
-### 2.1.7
-
-**Date**: 7th Dec 2012
-
-* Serializers now properly support nullable Foreign Keys.
-* Serializer validation now includes model field validation, such as uniqueness constraints.
-* Support 'true' and 'false' string values for BooleanField.
-* Added pickle support for serialized data.
-* Support `source='dotted.notation'` style for nested serializers.
-* Make `Request.user` settable.
-* Bugfix: Fix `RegexField` to work with `BrowsableAPIRenderer`.
-
-### 2.1.6
-
-**Date**: 23rd Nov 2012
-
-* Bugfix: Unfix DjangoModelPermissions.  (I am a doofus.)
-
-### 2.1.5
-
-**Date**: 23rd Nov 2012
-
-* Bugfix: Fix DjangoModelPermissions.
-
-### 2.1.4
-
-**Date**: 22nd Nov 2012
-
-* Support for partial updates with serializers.
-* Added `RegexField`.
-* Added `SerializerMethodField`.
-* Serializer performance improvements.
-* Added `obtain_token_view` to get tokens when using `TokenAuthentication`.
-* Bugfix: Django 1.5 configurable user support for `TokenAuthentication`.
-
-### 2.1.3
-
-**Date**: 16th Nov 2012
-
-* Added `FileField` and `ImageField`.  For use with `MultiPartParser`.
-* Added `URLField` and `SlugField`.
-* Support for `read_only_fields` on `ModelSerializer` classes.
-* Support for clients overriding the pagination page sizes.  Use the `PAGINATE_BY_PARAM` setting or set the `paginate_by_param` attribute on a generic view.
-* 201 Responses now return a 'Location' header.
-* Bugfix: Serializer fields now respect `max_length`.
-
-### 2.1.2
-
-**Date**: 9th Nov 2012
-
-* **Filtering support.**
-* Bugfix: Support creation of objects with reverse M2M relations.
-
-### 2.1.1
-
-**Date**: 7th Nov 2012
-
-* Support use of HTML exception templates.  Eg. `403.html`
-* Hyperlinked fields take optional `slug_field`, `slug_url_kwarg` and `pk_url_kwarg` arguments.
-* Bugfix: Deal with optional trailing slashes properly when generating breadcrumbs.
-* Bugfix: Make textareas same width as other fields in browsable API.
-* Private API change: `.get_serializer` now uses same `instance` and `data` ordering as serializer initialization.
-
-### 2.1.0
-
-**Date**: 5th Nov 2012
-
-* **Serializer `instance` and `data` keyword args have their position swapped.**
-* `queryset` argument is now optional on writable model fields.
-* Hyperlinked related fields optionally take `slug_field` and `slug_url_kwarg` arguments.
-* Support Django's cache framework.
-* Minor field improvements. (Don't stringify dicts, more robust many-pk fields.)
-* Bugfix: Support choice field in Browsable API.
-* Bugfix: Related fields with `read_only=True` do not require a `queryset` argument.
-
-**API-incompatible changes**: Please read [this thread][2.1.0-notes] regarding the `instance` and `data` keyword args before updating to 2.1.0.
-
----
-
-## 2.0.x series
-
-### 2.0.2
-
-**Date**: 2nd Nov 2012
-
-* Fix issues with pk related fields in the browsable API.
-
-### 2.0.1
-
-**Date**: 1st Nov 2012
-
-* Add support for relational fields in the browsable API.
-* Added SlugRelatedField and ManySlugRelatedField.
-* If PUT creates an instance return '201 Created', instead of '200 OK'.
-
-### 2.0.0
-
-**Date**: 30th Oct 2012
-
-* **Fix all of the things.**  (Well, almost.)
-* For more information please see the [2.0 announcement][announcement].
-
-For older release notes, [please see the GitHub repo](old-release-notes).
+For older release notes, [please see the version 2.x documentation][old-release-notes].
 
 [cite]: http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/ar01s04.html
 [deprecation-policy]: #deprecation-policy
 [django-deprecation-policy]: https://docs.djangoproject.com/en/dev/internals/release-process/#internal-release-deprecation-policy
 [defusedxml-announce]: http://blog.python.org/2013/02/announcing-defusedxml-fixes-for-xml.html
-[2.2-announcement]: 2.2-announcement.md
-[2.3-announcement]: 2.3-announcement.md
 [743]: https://github.com/tomchristie/django-rest-framework/pull/743
 [staticfiles14]: https://docs.djangoproject.com/en/1.4/howto/static-files/#with-a-template-tag
 [staticfiles13]: https://docs.djangoproject.com/en/1.3/howto/static-files/#with-a-template-tag
 [2.1.0-notes]: https://groups.google.com/d/topic/django-rest-framework/Vv2M0CMY9bg/discussion
-[announcement]: rest-framework-2-announcement.md
 [ticket-582]: https://github.com/tomchristie/django-rest-framework/issues/582
 [rfc-6266]: http://tools.ietf.org/html/rfc6266#section-4.3
-[old-release-notes]: https://github.com/tomchristie/django-rest-framework/blob/2.4.4/docs/topics/release-notes.md#04x-series
+[old-release-notes]: https://github.com/tomchristie/django-rest-framework/blob/version-2.4.x/docs/topics/release-notes.md
 
 [3.0.1-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.0.1+Release%22
 [3.0.2-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.0.2+Release%22
+[3.0.3-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.0.3+Release%22
+[3.0.4-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.0.4+Release%22
+[3.0.5-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.0.5+Release%22
+[3.1.0-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.1.0+Release%22
+[3.1.1-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.1.1+Release%22
+[3.1.2-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.1.2+Release%22
+[3.1.3-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.1.3+Release%22
+[3.2.0-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.2.0+Release%22
+[3.2.1-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.2.1+Release%22
+[3.2.2-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.2.2+Release%22
+[3.2.3-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.2.3+Release%22
+[3.2.4-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.2.4+Release%22
+[3.2.5-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.2.5+Release%22
+[3.3.0-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.3.0+Release%22
+[3.3.1-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.3.1+Release%22
+[3.3.2-milestone]: https://github.com/tomchristie/django-rest-framework/issues?q=milestone%3A%223.3.2+Release%22
 
 <!-- 3.0.1 -->
 [gh2013]: https://github.com/tomchristie/django-rest-framework/issues/2013
@@ -729,3 +426,233 @@ For older release notes, [please see the GitHub repo](old-release-notes).
 [gh2290]: https://github.com/tomchristie/django-rest-framework/issues/2290
 [gh2291]: https://github.com/tomchristie/django-rest-framework/issues/2291
 [gh2294]: https://github.com/tomchristie/django-rest-framework/issues/2294
+<!-- 3.0.3 -->
+[gh1101]: https://github.com/tomchristie/django-rest-framework/issues/1101
+[gh2010]: https://github.com/tomchristie/django-rest-framework/issues/2010
+[gh2278]: https://github.com/tomchristie/django-rest-framework/issues/2278
+[gh2283]: https://github.com/tomchristie/django-rest-framework/issues/2283
+[gh2287]: https://github.com/tomchristie/django-rest-framework/issues/2287
+[gh2311]: https://github.com/tomchristie/django-rest-framework/issues/2311
+[gh2315]: https://github.com/tomchristie/django-rest-framework/issues/2315
+[gh2317]: https://github.com/tomchristie/django-rest-framework/issues/2317
+[gh2319]: https://github.com/tomchristie/django-rest-framework/issues/2319
+[gh2327]: https://github.com/tomchristie/django-rest-framework/issues/2327
+[gh2330]: https://github.com/tomchristie/django-rest-framework/issues/2330
+[gh2331]: https://github.com/tomchristie/django-rest-framework/issues/2331
+[gh2340]: https://github.com/tomchristie/django-rest-framework/issues/2340
+[gh2342]: https://github.com/tomchristie/django-rest-framework/issues/2342
+[gh2351]: https://github.com/tomchristie/django-rest-framework/issues/2351
+[gh2355]: https://github.com/tomchristie/django-rest-framework/issues/2355
+[gh2369]: https://github.com/tomchristie/django-rest-framework/issues/2369
+[gh2386]: https://github.com/tomchristie/django-rest-framework/issues/2386
+<!-- 3.0.4 -->
+[gh2425]: https://github.com/tomchristie/django-rest-framework/issues/2425
+[gh2446]: https://github.com/tomchristie/django-rest-framework/issues/2446
+[gh2441]: https://github.com/tomchristie/django-rest-framework/issues/2441
+[gh2451]: https://github.com/tomchristie/django-rest-framework/issues/2451
+[gh2106]: https://github.com/tomchristie/django-rest-framework/issues/2106
+[gh2448]: https://github.com/tomchristie/django-rest-framework/issues/2448
+[gh2433]: https://github.com/tomchristie/django-rest-framework/issues/2433
+[gh2432]: https://github.com/tomchristie/django-rest-framework/issues/2432
+[gh2434]: https://github.com/tomchristie/django-rest-framework/issues/2434
+[gh2430]: https://github.com/tomchristie/django-rest-framework/issues/2430
+[gh2421]: https://github.com/tomchristie/django-rest-framework/issues/2421
+[gh2410]: https://github.com/tomchristie/django-rest-framework/issues/2410
+[gh2408]: https://github.com/tomchristie/django-rest-framework/issues/2408
+[gh2401]: https://github.com/tomchristie/django-rest-framework/issues/2401
+[gh2400]: https://github.com/tomchristie/django-rest-framework/issues/2400
+[gh2399]: https://github.com/tomchristie/django-rest-framework/issues/2399
+[gh2388]: https://github.com/tomchristie/django-rest-framework/issues/2388
+[gh2360]: https://github.com/tomchristie/django-rest-framework/issues/2360
+<!-- 3.0.5 -->
+[gh1850]: https://github.com/tomchristie/django-rest-framework/issues/1850
+[gh2108]: https://github.com/tomchristie/django-rest-framework/issues/2108
+[gh2475]: https://github.com/tomchristie/django-rest-framework/issues/2475
+[gh2479]: https://github.com/tomchristie/django-rest-framework/issues/2479
+[gh2486]: https://github.com/tomchristie/django-rest-framework/issues/2486
+[gh2492]: https://github.com/tomchristie/django-rest-framework/issues/2492
+[gh2518]: https://github.com/tomchristie/django-rest-framework/issues/2518
+[gh2519]: https://github.com/tomchristie/django-rest-framework/issues/2519
+[gh2524]: https://github.com/tomchristie/django-rest-framework/issues/2524
+[gh2530]: https://github.com/tomchristie/django-rest-framework/issues/2530
+<!-- 3.1.1 -->
+[gh2691]: https://github.com/tomchristie/django-rest-framework/issues/2691
+[gh2685]: https://github.com/tomchristie/django-rest-framework/issues/2685
+[gh2591]: https://github.com/tomchristie/django-rest-framework/issues/2591
+[gh2678]: https://github.com/tomchristie/django-rest-framework/issues/2678
+[gh2667]: https://github.com/tomchristie/django-rest-framework/issues/2667
+[gh2700]: https://github.com/tomchristie/django-rest-framework/issues/2700
+[gh2645]: https://github.com/tomchristie/django-rest-framework/issues/2645
+[gh2640]: https://github.com/tomchristie/django-rest-framework/issues/2640
+[gh2637]: https://github.com/tomchristie/django-rest-framework/issues/2637
+[gh2641]: https://github.com/tomchristie/django-rest-framework/issues/2641
+[gh2631]: https://github.com/tomchristie/django-rest-framework/issues/2631
+[gh2741]: https://github.com/tomchristie/django-rest-framework/issues/2641
+[gh2743]: https://github.com/tomchristie/django-rest-framework/issues/2643
+<!-- 3.1.2 -->
+[gh2656]: https://github.com/tomchristie/django-rest-framework/issues/2656
+[gh2687]: https://github.com/tomchristie/django-rest-framework/issues/2687
+[gh2869]: https://github.com/tomchristie/django-rest-framework/issues/2869
+[gh2764]: https://github.com/tomchristie/django-rest-framework/issues/2764
+[gh2763]: https://github.com/tomchristie/django-rest-framework/issues/2763
+[gh2757]: https://github.com/tomchristie/django-rest-framework/issues/2757
+[gh2630]: https://github.com/tomchristie/django-rest-framework/issues/2630
+[gh2724]: https://github.com/tomchristie/django-rest-framework/issues/2724
+[gh2711]: https://github.com/tomchristie/django-rest-framework/issues/2711
+[gh2745]: https://github.com/tomchristie/django-rest-framework/issues/2745
+[gh2754]: https://github.com/tomchristie/django-rest-framework/issues/2754
+[gh2762]: https://github.com/tomchristie/django-rest-framework/issues/2762
+[gh2798]: https://github.com/tomchristie/django-rest-framework/issues/2798
+[gh2807]: https://github.com/tomchristie/django-rest-framework/issues/2807
+[gh2818]: https://github.com/tomchristie/django-rest-framework/issues/2818
+[gh2835]: https://github.com/tomchristie/django-rest-framework/issues/2835
+[gh2836]: https://github.com/tomchristie/django-rest-framework/issues/2836
+[gh2853]: https://github.com/tomchristie/django-rest-framework/issues/2853
+[gh2862]: https://github.com/tomchristie/django-rest-framework/issues/2862
+[gh2863]: https://github.com/tomchristie/django-rest-framework/issues/2863
+[gh2868]: https://github.com/tomchristie/django-rest-framework/issues/2868
+[gh2905]: https://github.com/tomchristie/django-rest-framework/issues/2905
+<!-- 3.1.3 -->
+[gh2481]: https://github.com/tomchristie/django-rest-framework/issues/2481
+[gh2989]: https://github.com/tomchristie/django-rest-framework/issues/2989
+[gh2788]: https://github.com/tomchristie/django-rest-framework/issues/2788
+[gh3000]: https://github.com/tomchristie/django-rest-framework/issues/3000
+[gh2993]: https://github.com/tomchristie/django-rest-framework/issues/2993
+[gh2894]: https://github.com/tomchristie/django-rest-framework/issues/2894
+[gh2981]: https://github.com/tomchristie/django-rest-framework/issues/2981
+[gh2811]: https://github.com/tomchristie/django-rest-framework/issues/2811
+[gh2975]: https://github.com/tomchristie/django-rest-framework/issues/2975
+[gh2839]: https://github.com/tomchristie/django-rest-framework/issues/2839
+[gh2940]: https://github.com/tomchristie/django-rest-framework/issues/2940
+[gh2887]: https://github.com/tomchristie/django-rest-framework/issues/2887
+[gh2034]: https://github.com/tomchristie/django-rest-framework/issues/2034
+[gh2933]: https://github.com/tomchristie/django-rest-framework/issues/2933
+[gh2948]: https://github.com/tomchristie/django-rest-framework/issues/2948
+[gh2947]: https://github.com/tomchristie/django-rest-framework/issues/2947
+[gh2952]: https://github.com/tomchristie/django-rest-framework/issues/2952
+[gh2747]: https://github.com/tomchristie/django-rest-framework/issues/2747
+[gh2618]: https://github.com/tomchristie/django-rest-framework/issues/2618
+[gh3008]: https://github.com/tomchristie/django-rest-framework/issues/3008
+[gh2695]: https://github.com/tomchristie/django-rest-framework/issues/2695
+
+<!-- 3.2.0 -->
+[gh1854]: https://github.com/tomchristie/django-rest-framework/issues/1854
+[gh2250]: https://github.com/tomchristie/django-rest-framework/issues/2250
+[gh2416]: https://github.com/tomchristie/django-rest-framework/issues/2416
+[gh2539]: https://github.com/tomchristie/django-rest-framework/issues/2539
+[gh2659]: https://github.com/tomchristie/django-rest-framework/issues/2659
+[gh2690]: https://github.com/tomchristie/django-rest-framework/issues/2690
+[gh2704]: https://github.com/tomchristie/django-rest-framework/issues/2704
+[gh2712]: https://github.com/tomchristie/django-rest-framework/issues/2712
+[gh2727]: https://github.com/tomchristie/django-rest-framework/issues/2727
+[gh2759]: https://github.com/tomchristie/django-rest-framework/issues/2759
+[gh2766]: https://github.com/tomchristie/django-rest-framework/issues/2766
+[gh2783]: https://github.com/tomchristie/django-rest-framework/issues/2783
+[gh2789]: https://github.com/tomchristie/django-rest-framework/issues/2789
+[gh2804]: https://github.com/tomchristie/django-rest-framework/issues/2804
+[gh2886]: https://github.com/tomchristie/django-rest-framework/issues/2886
+[gh2915]: https://github.com/tomchristie/django-rest-framework/issues/2915
+[gh2920]: https://github.com/tomchristie/django-rest-framework/issues/2920
+[gh2926]: https://github.com/tomchristie/django-rest-framework/issues/2926
+[gh2928]: https://github.com/tomchristie/django-rest-framework/issues/2928
+[gh2935]: https://github.com/tomchristie/django-rest-framework/issues/2935
+[gh3011]: https://github.com/tomchristie/django-rest-framework/issues/3011
+[gh3016]: https://github.com/tomchristie/django-rest-framework/issues/3016
+[gh3024]: https://github.com/tomchristie/django-rest-framework/issues/3024
+[gh3115]: https://github.com/tomchristie/django-rest-framework/issues/3115
+[gh3139]: https://github.com/tomchristie/django-rest-framework/issues/3139
+[gh3165]: https://github.com/tomchristie/django-rest-framework/issues/3165
+[gh3216]: https://github.com/tomchristie/django-rest-framework/issues/3216
+[gh3225]: https://github.com/tomchristie/django-rest-framework/issues/3225
+
+<!-- 3.2.1 -->
+[gh3237]: https://github.com/tomchristie/django-rest-framework/issues/3237
+[gh3227]: https://github.com/tomchristie/django-rest-framework/issues/3227
+[gh3238]: https://github.com/tomchristie/django-rest-framework/issues/3238
+[gh3239]: https://github.com/tomchristie/django-rest-framework/issues/3239
+
+<!-- 3.2.2 -->
+[gh3254]: https://github.com/tomchristie/django-rest-framework/issues/3254
+[gh3258]: https://github.com/tomchristie/django-rest-framework/issues/3258
+[gh2776]: https://github.com/tomchristie/django-rest-framework/issues/2776
+[gh3261]: https://github.com/tomchristie/django-rest-framework/issues/3261
+[gh3260]: https://github.com/tomchristie/django-rest-framework/issues/3260
+[gh3241]: https://github.com/tomchristie/django-rest-framework/issues/3241
+
+<!-- 3.2.3 -->
+[gh3249]: https://github.com/tomchristie/django-rest-framework/issues/3249
+[gh3250]: https://github.com/tomchristie/django-rest-framework/issues/3250
+[gh3275]: https://github.com/tomchristie/django-rest-framework/issues/3275
+[gh3288]: https://github.com/tomchristie/django-rest-framework/issues/3288
+[gh3290]: https://github.com/tomchristie/django-rest-framework/issues/3290
+[gh3303]: https://github.com/tomchristie/django-rest-framework/issues/3303
+[gh3313]: https://github.com/tomchristie/django-rest-framework/issues/3313
+[gh3316]: https://github.com/tomchristie/django-rest-framework/issues/3316
+[gh3318]: https://github.com/tomchristie/django-rest-framework/issues/3318
+[gh3321]: https://github.com/tomchristie/django-rest-framework/issues/3321
+
+<!-- 3.2.4 -->
+[gh2761]: https://github.com/tomchristie/django-rest-framework/issues/2761
+[gh3314]: https://github.com/tomchristie/django-rest-framework/issues/3314
+[gh3323]: https://github.com/tomchristie/django-rest-framework/issues/3323
+[gh3324]: https://github.com/tomchristie/django-rest-framework/issues/3324
+[gh3359]: https://github.com/tomchristie/django-rest-framework/issues/3359
+[gh3361]: https://github.com/tomchristie/django-rest-framework/issues/3361
+[gh3364]: https://github.com/tomchristie/django-rest-framework/issues/3364
+[gh3415]: https://github.com/tomchristie/django-rest-framework/issues/3415
+
+<!-- 3.2.5 -->
+[gh3550]:https://github.com/tomchristie/django-rest-framework/issues/3550
+
+<!-- 3.3.0 -->
+[gh3315]: https://github.com/tomchristie/django-rest-framework/issues/3315
+[gh3410]: https://github.com/tomchristie/django-rest-framework/issues/3410
+[gh3435]: https://github.com/tomchristie/django-rest-framework/issues/3435
+[gh3450]: https://github.com/tomchristie/django-rest-framework/issues/3450
+[gh3454]: https://github.com/tomchristie/django-rest-framework/issues/3454
+[gh3475]: https://github.com/tomchristie/django-rest-framework/issues/3475
+[gh3495]: https://github.com/tomchristie/django-rest-framework/issues/3495
+[gh3509]: https://github.com/tomchristie/django-rest-framework/issues/3509
+[gh3421]: https://github.com/tomchristie/django-rest-framework/issues/3421
+[gh3525]: https://github.com/tomchristie/django-rest-framework/issues/3525
+[gh3526]: https://github.com/tomchristie/django-rest-framework/issues/3526
+[gh3429]: https://github.com/tomchristie/django-rest-framework/issues/3429
+[gh3536]: https://github.com/tomchristie/django-rest-framework/issues/3536
+
+<!-- 3.3.1 -->
+[gh3556]: https://github.com/tomchristie/django-rest-framework/issues/3556
+[gh3560]: https://github.com/tomchristie/django-rest-framework/issues/3560
+[gh3564]: https://github.com/tomchristie/django-rest-framework/issues/3564
+[gh3568]: https://github.com/tomchristie/django-rest-framework/issues/3568
+[gh3592]: https://github.com/tomchristie/django-rest-framework/issues/3592
+[gh3593]: https://github.com/tomchristie/django-rest-framework/issues/3593
+
+<!-- 3.3.2 -->
+[gh3228]: https://github.com/tomchristie/django-rest-framework/issues/3228
+[gh3252]: https://github.com/tomchristie/django-rest-framework/issues/3252
+[gh3513]: https://github.com/tomchristie/django-rest-framework/issues/3513
+[gh3534]: https://github.com/tomchristie/django-rest-framework/issues/3534
+[gh3578]: https://github.com/tomchristie/django-rest-framework/issues/3578
+[gh3596]: https://github.com/tomchristie/django-rest-framework/issues/3596
+[gh3597]: https://github.com/tomchristie/django-rest-framework/issues/3597
+[gh3600]: https://github.com/tomchristie/django-rest-framework/issues/3600
+[gh3626]: https://github.com/tomchristie/django-rest-framework/issues/3626
+[gh3628]: https://github.com/tomchristie/django-rest-framework/issues/3628
+[gh3631]: https://github.com/tomchristie/django-rest-framework/issues/3631
+[gh3634]: https://github.com/tomchristie/django-rest-framework/issues/3634
+[gh3635]: https://github.com/tomchristie/django-rest-framework/issues/3635
+[gh3654]: https://github.com/tomchristie/django-rest-framework/issues/3654
+[gh3655]: https://github.com/tomchristie/django-rest-framework/issues/3655
+[gh3656]: https://github.com/tomchristie/django-rest-framework/issues/3656
+[gh3662]: https://github.com/tomchristie/django-rest-framework/issues/3662
+[gh3668]: https://github.com/tomchristie/django-rest-framework/issues/3668
+[gh3672]: https://github.com/tomchristie/django-rest-framework/issues/3672
+[gh3677]: https://github.com/tomchristie/django-rest-framework/issues/3677
+[gh3679]: https://github.com/tomchristie/django-rest-framework/issues/3679
+[gh3684]: https://github.com/tomchristie/django-rest-framework/issues/3684
+[gh3687]: https://github.com/tomchristie/django-rest-framework/issues/3687
+[gh3701]: https://github.com/tomchristie/django-rest-framework/issues/3701
+[gh3705]: https://github.com/tomchristie/django-rest-framework/issues/3705
+[gh3714]: https://github.com/tomchristie/django-rest-framework/issues/3714
+[gh3718]: https://github.com/tomchristie/django-rest-framework/issues/3718
+[gh3723]: https://github.com/tomchristie/django-rest-framework/issues/3723
